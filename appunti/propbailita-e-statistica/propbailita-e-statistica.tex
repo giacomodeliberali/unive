@@ -1,0 +1,69 @@
+% !TeX spellcheck = it_IT
+% !TXS template
+\documentclass[italian]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[a4paper,top=3cm,bottom=3cm,left=2.5cm,right=2.5cm]{geometry}
+\usepackage[italian]{babel}
+\usepackage{enumitem}
+\usepackage[fleqn]{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}% http://ctan.org/pkg/mathtools
+\usepackage{cancel}
+\usepackage{color}
+\usepackage[usenames,dvipsnames]{xcolor}
+\usepackage{units}
+\usepackage{hyperref}
+\usepackage{textcomp}
+\usepackage{soul}
+\usepackage{listings}
+\usepackage{pifont} %https://www.rpi.edu/dept/arc/training/latex/LaTeX_symbols.pdf
+\usepackage{fontspec}
+\usepackage{fontawesome}
+\usepackage{mdframed}
+\usepackage{pgf,tikz}
+\usepackage{mathrsfs}
+\usetikzlibrary{arrows}
+\usepackage{multicol}
+\usepackage{titlesec}\usepackage{graphicx}
+
+\hypersetup{
+	colorlinks,
+	citecolor=black,
+	filecolor=black,
+	linkcolor=black,
+	urlcolor=blue
+}
+
+\newcommand{\tildepes}{{\raise.17ex\hbox{$\scriptstyle\mathtt{\sim}$}}}
+\newcommand{\linea}{\begin{center}\rule{5cm}{1pt}\end{center}}
+\newcommand{\indep}{\rotatebox[origin=c]{90}{$\models$}}
+
+\author{Giacomo De Liberali}
+
+\begin{document}
+	LGN: siano $X_1,\dots,X_n$ v.a. i.i.d. con $E(X_1) = \mu$ \\
+	e $var(X_1) = \sigma^2$ finita. Allora:  $\frac{1}{n}\sum_{i=1}^{n}X_i \xrightarrow{p} \mu$\\
+	\[
+		\hat{\varTheta} = \frac{1}{n}\sum_{i=1}^{n}g(X_i) \xrightarrow{p} E(g(X)) = \varTheta
+	\]
+	\begin{gather*}
+		X \tildepes Bi(n,p), P(X=k) = \binom{n}{k}p^k(1-p)^{n-k} \\
+		E(X) = np \\
+		 E(X^2) = n(n-1)p^2+np \\
+		Var(x) =  E(x^2) - E(x)^2 = np(1-p)  \\
+		\binom{n}{k} = \frac{n!}{k!(n-k)!} \\\\
+		Y \tildepes Pois(\lambda) = \frac{\lambda^k}{k!}e^{-\lambda} \\
+		E(Y) = Var(Y) = \lambda \\\\
+		X \tildepes N(\mu,\sigma^2) \\
+		E(X) = \mu \\
+		P(a < X < b) = P(X < b) - P(X < a) \\
+		P(X > a) = 1 - P(X \leq a) = 1 - \phi\left(\frac{X - \mu}{\sigma}\right) \\\\
+		E(xy) = E(x)E(y) \iff x \indep y \\
+		Var(x) = E(x^2) - E(x)^2 \\
+		Var(ax + b) = a^2Var(x) \\
+		Var(x,y) = Var(x) + Var(y) - Cov(x,y) \\
+		Cov(x,y) = E(xy) - E(x)E(y)
+	\end{gather*}
+\end{document}

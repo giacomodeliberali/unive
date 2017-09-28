@@ -1,0 +1,206 @@
+% !TeX spellcheck = it_IT
+% !TXS template
+\documentclass[italian]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[a4paper,top=3cm,bottom=3cm,left=2.5cm,right=2.5cm]{geometry}
+\usepackage[italian]{babel}
+\usepackage{enumitem}
+\usepackage[fleqn]{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}% http://ctan.org/pkg/mathtools
+\usepackage{cancel}
+\usepackage{color}
+\usepackage[usenames,dvipsnames]{xcolor}
+\usepackage{units}
+\usepackage{hyperref}
+\usepackage{textcomp}
+\usepackage{soul}
+\usepackage{listings}
+\usepackage{pifont} %https://www.rpi.edu/dept/arc/training/latex/LaTeX_symbols.pdf
+\usepackage{fontspec}
+\usepackage{fontawesome}
+\usepackage{mdframed}
+\usepackage{pgf,tikz}
+\usepackage{mathrsfs}
+\usetikzlibrary{arrows}
+\usepackage{multicol}
+\usepackage{titlesec}
+
+\hypersetup{
+	colorlinks,
+	citecolor=black,
+	filecolor=black,
+	linkcolor=black,
+	urlcolor=blue
+}
+
+% SubSubSubSection
+%\titleclass{\subsubsubsection}{straight}[\subsection]
+%\newcounter{subsubsubsection}[subsubsection]
+%\renewcommand\thesubsubsubsection{\thesubsubsection.\arabic{subsubsubsection}}
+%\renewcommand\theparagraph{\thesubsubsubsection.\arabic{paragraph}} % optional; useful if paragraphs are to be numbered
+%\titleformat{\subsubsubsection}
+%{\normalfont\normalsize\bfseries}{\thesubsubsubsection}{1em}{}
+%\titlespacing*{\subsubsubsection}
+%{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+
+%\makeatletter
+%\renewcommand\paragraph{\@startsection{paragraph}{5}{\z@}%
+%	{3.25ex \@plus1ex \@minus.2ex}%
+%	{-1em}%
+%	{\normalfont\normalsize\bfseries}}
+%\renewcommand\subparagraph{\@startsection{subparagraph}{6}{\parindent}%
+%	{3.25ex \@plus1ex \@minus .2ex}%
+%	{-1em}%
+%	{\normalfont\normalsize\bfseries}}
+%\def\toclevel@subsubsubsection{4}
+%\def\toclevel@paragraph{5}
+%\def\toclevel@paragraph{6}
+%\def\l@subsubsubsection{\@dottedtocline{4}{7em}{4em}}
+%\def\l@paragraph{\@dottedtocline{5}{10em}{5em}}
+%\def\l@subparagraph{\@dottedtocline{6}{14em}{6em}}
+%\makeatother
+%\setcounter{secnumdepth}{4}
+%\setcounter{tocdepth}{4}
+% End SubSubSubSection
+
+\renewcommand{\labelitemii}{$\circ$}
+
+\newcommand\x{\times}
+\newcommand{\linea}{\begin{center}\rule{5cm}{1pt}\end{center}}
+\newcommand{\crossmark}{\textcolor{red}{\text{\ding{56}}}}
+\renewcommand{\checkmark}{\textcolor{ForestGreen}{\text{\ding{52}}}}
+\newcommand{\ins}[1]{\text{$\mathbb{#1}$}}
+\newcommand{\dateright}[1]{\normalfont{\normalsize{\hfill #1 \\}}}
+\renewcommand{\dim}[1]{\text{dim$\left(#1\right)$}}
+\newcommand{\taleche}{\;|\;}
+\newcommand{\omicron}{o}
+
+\newcommand{\omegaClass}{\omega(g(n))}
+\newcommand{\varOmegaClass}{\varOmega(g(n))}
+\newcommand{\varOmicron}{O}
+\newcommand{\omicronClass}{\omicron(g(n))}
+\newcommand{\varOmicronClass}{\varOmicron(g(n))}
+\newcommand{\varThetaClass}{\varTheta(g(n))}
+
+\newcommand{\leaves}[1]{\text{$\#foglie\left(#1\right)$}}
+\newcommand{\nodes}[1]{\text{$\#nodi\left(#1\right)$}}
+
+\newcommand{\fn}{f(n)}
+\newcommand{\gn}{g(n)}
+\let\oldexists\exists
+\renewcommand{\exists}{\text{$\;\oldexists$}}
+
+\newcommand{\exercize}{\text{\faPencil $\;$ Esercizio }}
+\newcommand{\homeExercize}{\text{\faHome $\;$ Esercizio per casa}}
+\newcommand{\example}{\text{\faCircleArrowRight $\;$ Esempio }}
+
+\newcommand{\isLeq}{?\leq}
+
+
+
+\definecolor{ao(english)}{rgb}{0.0, 0.5, 0.0}
+
+\lstset{language=C,
+	basicstyle=\ttfamily,
+	keywordstyle=\color{blue}\ttfamily,
+	stringstyle=\color{red}\ttfamily,
+	commentstyle=\color{ao(english)}\ttfamily,
+	morecomment=[l][\color{magenta}]{\#}
+}
+
+\author{Giacomo De Liberali}
+
+\begin{document}
+	
+\title{Ricerca operativa}
+\maketitle
+
+\tableofcontents
+\pagebreak
+
+\section{Introduzione}
+\dateright{21 Settembre 2017}
+Gli argomenti trattati in questo corso sono:
+
+\begin{enumerate}
+	\item Modelli di programmazione lineare
+	\item Metodo del simplesso
+	\item Branch \& Bound
+	\item Problema di flusso su reti
+\end{enumerate}
+
+\subsection{Problemi di esempio}
+
+\subsubsection{Minimizzare costi}
+Vi sono delle fabbriche $F_1,F_2,F_3$ che producono dei prodotti $P_1,P_2$ che inviano ai magazzini $M_1,M_2$.
+\begin{table}[h]
+	\centering
+	\caption{Costi e tempi di produzione}
+	\begin{tabular}{c|c|c|c|c|c|c|}
+		\cline{2-7}
+		& \multicolumn{2}{c|}{$F_1$} & \multicolumn{2}{c|}{$F_2$} & \multicolumn{2}{c|}{F\_3\$} \\ \cline{2-7} 
+		& c           & t            & c           & t            & c            & t            \\ \hline
+		\multicolumn{1}{|c|}{$P_1$}   & 7.2         & 0.72         & 6.3         & 0.63         & 5.2          & 0.5          \\ \hline
+		\multicolumn{1}{|c|}{$P_2$}   & 9.2         & 0.81         & 7.3         & 0.68         & 6.6          & 0.67         \\ \hline
+		\multicolumn{1}{|c|}{ore max} & \multicolumn{2}{c|}{2200}  & \multicolumn{2}{c|}{930}   & \multicolumn{2}{c|}{1600}   \\ \hline
+	\end{tabular}
+\end{table}
+\begin{table}[h]
+	\centering
+	\caption{Costi di trasporto}
+	\begin{tabular}{c|c|c|c|}
+		\cline{2-4}
+		& $F_1$ & $F_2$ & $F_3$ \\ \hline
+		\multicolumn{1}{|c|}{$M_1$} & 0.90  & 0.88  & 1.03  \\ \hline
+		\multicolumn{1}{|c|}{$M_2$} & 0.99  & 1.10  & 0.85  \\ \hline
+	\end{tabular}
+\end{table}
+\begin{table}[h]
+	\centering
+	\caption{Quantitativi minimi per i magazzini}
+	\begin{tabular}{c|c|c|}
+		\cline{2-3}
+		& $M_1$ & $M_2$ \\ \hline
+		\multicolumn{1}{|c|}{$P_1$} & 1100  & 1900  \\ \hline
+		\multicolumn{1}{|c|}{$P_2$} & 1650  & 1300  \\ \hline
+	\end{tabular}
+\end{table}\\
+L'obbiettivo è minimizzare i cosi di produzione e trasporto di $P_1$ e $P_2$. Il primo passo è la scelta delle variabili:
+\[
+	x_{ij} = \text{numero di prodotti di tipo $P_1$ fabbricati in $F_i$ ed inviati a $M_j$ (con $i=1,2,3$ e $j=1,2$) }
+\]
+\[
+	y_{ij} = \text{numero di prodotti di tipo $P_2$ fabbricati in $F_i$ ed inviati a $M_j$ (con $i=1,2,3$ e $j=1,2$) }
+\]
+La funzione obbiettivo viene costruita come
+\begin{gather*}
+	7.2\overbrace{(x_{11} + x_{12})}^{\mathclap{\text{costo di produzione di $P_1$ in $F_1$}}} + 7.3\underbrace{(y_{11} + y_{12})}_{\mathclap{\text{costo di produzione di $P_2$ in $F_1$}}} + \\
+	6.3\overbrace{(x_{21} + x_{22})}^{\mathclap{\text{costo di produzione di $P_1$ in $F_2$}}} + 7.3\underbrace{(y_{21} + y_{22})}_{\mathclap{\text{costo di produzione di $P_2$ in $F_2$}}} + \\
+	5.2(x_{31} + x_{32}) + 6.6(y_{31} + _{32}) + \\
+	0.9\underbrace{(x_{11}) + y_{11})}_{\mathclap{\text{costo di trasporto di $P_1$ e $P_2$ da $F_1$ a $M_1$}}} + 0.99(x_{12} + y_{12}) + \\
+	0.88(x_{21} + y_{21}) + 1.1(x_{22} + y_{22}) + \\
+	1.03(x_{31} + y_{31}) + 0.85(x_{32} + y_{32})
+\end{gather*}
+La funzione obbiettivo definita deve comunque tenere conto dei vincoli che sono imposti, ovvero il massimo numero di ore lavorabili e il quantitativo di prodotto che i magazzini devono ricevere. Andiamo quindi a formalizzare i vincoli.\\\\
+Vincoli temporali:
+\begin{gather*}
+	0.72(x_{11} + x_{12}) + 0.81(y_{11} + y_{12}) \leq 2200 \qquad \text{tempo complessivo di produzione e trasporto di $P_1$ e $P_2$ in $M_1$} \\
+	0.63(x_{21} + x_{22}) + 0.68(y_{21} + y_{22}) \leq 930 \qquad \text{tempo complessivo di produzione e trasporto di $P_1$ e $P_2$ in $M_2$} \\
+	0.5(x_{31} + x_{32}) + 0.67(y_{31} + y_{32}) \leq 1600 \qquad \text{tempo complessivo di produzione e trasporto di $P_1$ e $P_2$ in $M_3$} 
+\end{gather*}
+Vincoli quantitativi:
+\begin{gather*}
+	(x_{11} + x_{21} + x_{31}) \geq 1100 \qquad \text{quantitativo di prodotto $P_1$ che $M_1$ deve ricevere}\\
+	(y_{11} + y_{21} + y_{31}) \geq 1650 \\
+	(x_{12} + x_{22} + x_{32}) \geq 1900\\
+	(y_{12} + y_{22} + y_{32}) \geq 1300
+\end{gather*}
+e i vincoli impliciti, ovvero che i valori devono essere interi e non negativi
+\begin{gather*}
+	x_{ij} \geq 0 \; \forall ij \in \mathbb{N} \\
+	y_{ij} \geq 0 \; \forall ij \in \mathbb{N} 
+\end{gather*}
+\end{document}
