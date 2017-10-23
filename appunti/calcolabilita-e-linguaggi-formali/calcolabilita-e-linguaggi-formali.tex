@@ -27,6 +27,7 @@
 \usetikzlibrary{arrows}
 \usepackage{multicol}
 \usepackage{titlesec}
+\usepackage{amsthm}
 
 \hypersetup{
 	colorlinks,
@@ -69,7 +70,6 @@
 \renewcommand{\labelitemii}{$\circ$}
 \newcommand{\powerset}[1]{\mathcal{P}(#1)}
 
-\newcommand\x{\times}
 \newcommand{\linea}{\begin{center}\rule{5cm}{1pt}\end{center}}
 \newcommand{\crossmark}{\textcolor{red}{\text{\ding{56}}}}
 \renewcommand{\checkmark}{\textcolor{ForestGreen}{\text{\ding{52}}}}
@@ -77,14 +77,19 @@
 \newcommand{\dateright}[1]{\normalfont{\normalsize{\hfill #1 \\}}}
 \renewcommand{\dim}[1]{\text{dim$\left(#1\right)$}}
 \newcommand{\taleche}{\;|\;}
-
+\newtheorem*{theorem*}{Teorema}
+\newtheorem*{definition*}{Definizione}
+\newtheorem*{corollary*}{Corollario}
+\newtheorem*{lemma*}{Lemma}
+\newtheorem*{exercize*}{Esercizio}
 
 \let\oldexists\exists
 \renewcommand{\exists}{\text{$\;\oldexists$}}
 
-\newcommand{\exercize}{\text{\faPencil $\;$ Esercizio }}
 \newcommand{\homeExercize}{\text{\faHome $\;$ Esercizio per casa}}
-\newcommand{\example}{\text{\faCircleArrowRight $\;$ Esempio }}
+\newcommand{\example}{\noindent\textbf{Esempio.\quad}}
+\newcommand{\derive}{\overset{*}{\Rightarrow}}
+\newcommand{\To}{\Rightarrow}
 
 
 \definecolor{ao(english)}{rgb}{0.0, 0.5, 0.0}
@@ -415,7 +420,613 @@ dove:
 			\end{cases}
 		\end{align*}
 \end{itemize}
+\pagebreak
+\paragraph{Chiusura rispetto all'operazione star}
+La classe dei linguaggi regolari è chiusa rispetto all'operazione \textit{star}. Dimostrazione: \\\\
+Sia $N_1$ un linguaggio regolare, allora esiste un NFA $N_1$ che lo riconosce. Costruisco un automa $N = (Q,\;\Sigma,\;\delta,\;q_0,\;F)$ che accetta $A^*$:
+\begin{center}
+	\includegraphics[width=0.7\linewidth]{images/nfa_star}
+\end{center}
+Aggiungo un primo stato accettante e due $\varepsilon$-transizioni per poter iterare un numero arbitrario di volte. Il primo stato è accettante perche $\varepsilon$ fa sempre parte dei $A^*$. Definizione formale:
+\[
+	N_1 = (Q_1,\;\Sigma,\;\delta_1,\;q_1,\;F_1)
+\]
+sia 
+\[
+	N = (Q,\;\Sigma,\;\delta,\;q_0,\;F)
+\]
+dove:
+\begin{itemize}
+	\item $Q = Q_1 \cup \{q_0\}$
+	\item $F = \cup \{q_0\}$
+	\item e la funzione di transizione è definita come
+	\begin{align*}
+	\delta(q,a) = 
+	\begin{cases}
+	\delta_1(q,a) & \text{se } q \in Q_1 \land q \notin F_1 \\
+	\delta_1(q,a) & \text{se } q \in F_1 \land a \neq \varepsilon \\
+	\delta_1(q,a) \cup \{q_1\} & \text{se } q \in F_1 \land a = \varepsilon\\
+	\{\varepsilon\} & \text{se } q = q_0 \land a = \varepsilon \\
+	\varnothing & \text{se } q = q_0 \land a \neq \varepsilon
+	\end{cases}
+	\end{align*}
+\end{itemize}
+\pagebreak
+\section{Espressioni regolari}
+Definiamo i linguaggi regolari in modo più compatto e semplice rispetto agli automi:
+\[
+	L((0\cup 1)0^*) = \{ w \taleche w \text{ inizia con $0$ oppure $1$ e ha un numero arbitrario di $0$}\}
+\]
+Secondo le regole della precedenza $(^*,\circ,\cup)$, $^*$ è applicabile a $0$ ma non a $(0\cup 1)$.
+\subsection{Definizione}
+Diciamo che $R$ è un espressione regolare su un alfabeto $\Sigma$ se $R$ è:
+\begin{enumerate}
+	\item $a \taleche a \in \Sigma$, ovvero se è un membro dell'alfabeto (che è sempre un'espressione regolare) \hfill $L(a) = \{a\}$
+	\item $\varepsilon$ \hfill $L(\varepsilon) = \{\varepsilon\}$
+	\item $\varnothing$ \hfill $L(\varnothing) = \{\varnothing\}$
+	\item $(R_1 \cup R_2)$, dove $R_1$ e $R_2$ sono espressioni regolari \hfill $L((\overbracket{R_1}^{\mathclap{\text{regexp}}} \cup R_2)) = \overbracket{L(R_1)}^{\mathclap{\text{linguaggio regolare}}} \cup L(R_2)$
+	\item $(R_1 \circ R_2)$, dove $R_1$ e $R_2$ sono espressioni regolari  \hfill $L((R_1 \circ R_2)) = L(R_1) \circ L(R_2)$
+	\item $(R_1^*)$, dove $R_1$ è un'espressione regolare \hfill $L(R_1^*) = L(R_1)^*$
+\end{enumerate}
+\example in $\Sigma = \{0,1\}$:
+\begin{itemize}
+	\item $L(0^*10^*) = \{ w \taleche w \text{ contiene esattamente un 1} \}$
+	\item $L(01\cup 10) = \{ 01,10 \}$
+	\item $L((0\cup \varepsilon)1^*) = \{ w \taleche w \text{ è una stringa di soli $1$ possibilmente preceduta da $0$ } \}$
+	\item $L(1^* \circ \varnothing) = \varnothing$, concatenando l'insieme vuoto con qualunque altra cosa si ottiene insieme vuoto
+	\item $L(\varnothing^*) = \{\varepsilon\}$, l'operatore di star su un insieme vuoto ritorna la combinazione di $0$ stringhe, ovvero solamente stringa vuota
+\end{itemize}
+Identità delle espressioni regolari, dove $R$ è una \textit{regexp}:
+\begin{itemize}
+	\item $R \cup \varnothing = R \quad \checkmark$
+	\item $R \cup \varepsilon = R \quad \crossmark$
+	\item $R \circ \varepsilon = R \quad \checkmark$
+	\item $R \circ \varnothing = R \quad \crossmark$
+\end{itemize}
+\pagebreak
+\subsection{Equivalenza con automi a stati finiti}
+\begin{theorem*}
+Un linguaggio è regolare se e solo se esiste un'espressione regolare che lo descrive. Quindi $A$ è regolare se e solo se esiste una \textit{regexp} in $R$ tale che $L(R) = A$.
+\end{theorem*}
+\noindent
+Essendo un \textit{se e solo se} vanno dimostrate entrambe le parti.
+\begin{lemma*}
+	Se $A$ è descritto da una rgexp, allora $A$ è regolare.
+\end{lemma*}
+\noindent Sia $A$ descritto da una regexp $R$. Per induzione sulla struttura di $R$ procediamo per casi:
+\begin{enumerate}[label=\arabic*)]
+	\item $R = a$ per qualche $a \in \Sigma$, Dimostro che $L(a)$ è regolare se trovo un NFA che lo riconosca:
+	\begin{center}
+		\includegraphics[width=0.3\linewidth]{images/regexp_dim_1}
+	\end{center}
+	%
+	\item $R = \varepsilon$. Allora $L(R) = \{ \varepsilon \}$, e il seguente NFA riconosce $L(R)$
+	\begin{center}
+		\includegraphics[width=0.2\linewidth]{images/regexp_dim_2}
+	\end{center}
+	%
+	\item $R = \varnothing$. Allora $L(R) = \varnothing$, e il seguente NFA riconosce $L(R)$
+	\begin{center}
+		\includegraphics[width=0.2\linewidth]{images/regexp_dim_3}
+	\end{center}
+	%
+	\item $R = R_1 \cup R_2$
+	\item $R = R_1 \circ R_2$
+	\item $R = R_1^*$
+\end{enumerate}
+Per gli ultimi tre casi utilizziamo le costruzioni date delle dimostrazioni precedenti, ovvero che i linguaggi regolari sono chiusi rispetto alle operazioni regolari.
+\begin{lemma*}
+	Se un linguaggio è regolare, allora esiste un'espressione regolare che lo riconosce.
+\end{lemma*}
+\noindent
+Per dimostrare questo lemma abbiamo bisogno di introdurre un nuovo tipo di automa, i GNFA, ovvero un automa a stati finiti non deterministico generalizzato, sui quali archi non vi sono più simboli, ma espressioni regolari.
+\pagebreak
+\subsection{GNFA}
+\example 
+\begin{center}
+	\includegraphics[width=0.7\linewidth]{images/gnfa}
+\end{center}
+Ci focalizziamo su un GNFA con un formato particolare, ovvero
+\begin{enumerate}
+	\item Lo stato iniziale ha archi uscenti verso tutti gli altri stati e nessun arco entrante
+	\item Lo stato finale ha archi entranti da tutti gli altri stati e nessun arco uscente
+	\item Per tutti gli altri stati esiste un arco verso ciascun altro stato, incluso se stesso, ma esclusi quelli finale ed iniziale
+\end{enumerate}
+Per convertire un DFA in un GNFA ben formato è necessario seguire una serie di passaggi:
+\begin{enumerate}
+	\item Aggiungi un nuovo stato iniziale con $\varepsilon-$transizioni verso lo stato iniziale originario (il nuovo stato iniziale non ha transizioni in entrata)
+	\item Aggiungi uno stato finale, metti $\varepsilon-$transizioni  da ciascuno dei vecchi stati finali verso esso e rendi tali stati non finali
+	\item Se una freccia ha più etichette, rimpiazzale con l'unione delle etichette stesse ($a,b \Rightarrow a \cup b$). Se una freccia è mancante, aggiungila ed etichettala con $\varnothing$.
+\end{enumerate}
+Passaggi tipici di una conversione da GNFA a regular expression:
+\begin{center}
+	\includegraphics[width=0.5\linewidth]{images/dfa_to_gnfa}
+\end{center}
+\pagebreak
+\example di conversione da DFA a GNFA:
+\begin{center}
+	\includegraphics[width=0.5\linewidth]{images/automa9}
+\end{center}
+\begin{center}
+\includegraphics[width=0.5\linewidth]{images/automa10}
+\end{center}
+\example di normalizzazione di un GNFA, che permette di ridurne gli stati al fine di ottenere un'espressione regolare:
+\begin{center}
+	\includegraphics[width=0.5\linewidth]{images/automa12}
+\end{center}
+\example di normalizzazione di un GNFA:
+\begin{center}
+	\includegraphics[width=0.7\linewidth]{images/automa11}
+\end{center}
+\pagebreak
+\section{Linguaggi non regolari}
+I linguaggi non regolari sono tutti quei linguaggi che non possono essere riconosciuti da nessun automa a stati finiti (DFA).
+\begin{gather*}
+	A = \{ 0^n1^n \taleche n \geq 0 \} \to \text{non regolare} \\
+	A = \{ w \taleche w \text{ ha lo stesso numero di 0 e 1} \} \to \text{non regolare} \\
+	A = \{ w \taleche w \text{ ha lo stesso numero di occorrenze delle sottostringhe 01 e 10} \} \to \text{regolare}
+\end{gather*}
+Andiamo ora a definire uno dei modi che permettono di determinare la regolarità di un linguaggio.
+\subsection{Pumping}
+\begin{lemma*}
+	Se $A$ è un linguaggio regolare, esiste un numero $p$ (pumping length) tale che ogni stringa di $A$ di lunghezza almeno $p$, può essere divisa in tre pezzi $xyz$ tali che
+	\begin{enumerate}
+		\item $\forall i \geq 0: xy^iz \in A$
+		\item $|y| > 0$
+		\item $|xy| \leq p$
+	\end{enumerate}
+\end{lemma*}
+\noindent
+\textit{Intuizione:} Se $A$ è un linguaggio regolare allora esiste un DFA $M$ che lo riconosce. Imposto $p$ al numero di stati di $M$. Prendiamo una stringa $s$ tale che $|s|>p$. Poiché $|s|>p$ devo attraversare almeno $p+1$ stati per riconoscerla, da qui ricaviamo che uno stato dell'automa deve necessariamente essere attraversato almeno due volte.
+\begin{center}
+	\includegraphics[width=0.3\linewidth]{images/regular_languages_puming}
+\end{center}
+\begin{proof}
+	Sia $A$ un linguaggio regolare, allora esiste un DFA $M$ che lo riconosce. Sia $M = (Q,\;\Sigma,\;\delta,\;q_0,\;F)$ e sia $p$ il numero di stati in $Q$. Sia $s = s_1,\dots,s_n$ tale che $n \geq p$ e sia $r_1,\dots,r_{n+1}$ la sequenza di stati attraversati per riconoscere $s$, allora $r_{i+1} = \delta(r_i,s_i)$. \\
+	Tra i primi $p+1$ stati in $r_1,\dots,r_n$ deve esserci una ripetizione, chiamata prima occorrenza $r_j$ e una seconda occorrenza chiamata $r_l$ con $l \leq p+1$. Spezziamo $s$ in tre sotto-stringhe $xyz$ dove:
+	\begin{itemize}[label={}]
+		\item $x = s_1,\dots,s_{j-1}$
+		\item $y = s_j,\dots,s_{l-1}$
+		\item $z = s_l,\dots,s_{n}$
+	\end{itemize}
+	Verifichiamo ora le tre condizioni:
+	\begin{enumerate}
+		\item $\forall i \geq 0: xy^iz \in A$
+		\item $|y| > 0$ \text{ vero perché considero occorrenze diverse dello stato}
+		\item Sappiamo che $j \neq l$ e che $l \leq p$, da cui $|xy| \leq p$
+	\end{enumerate}
+\end{proof}
+Per dimostrare che un linguaggio $A$ è non regolare, posso dunque utilizzare il \textit{puming lemma}:
+\begin{enumerate}
+	\item Assumo per assurdo che $A$ sia regolare
+	\item Poiché $A$ è regolare, deve valere il \textit{puming lemma}
+	\item Trovo una stringa $s$, con $|s| \geq p$ tale che per ogni particolare $xyz$, con $|xyz|>p$ ho che esiste $i$ tale che $xy^iz \notin A$
+	\item Concludo che $A$ non poteva essere regolare
+\end{enumerate}
+\pagebreak
+\example di applicazione del \textit{puming lemma} per verificare la non regolarità di un linguaggio.
+\[
+	A = \{ 0^n1^n \taleche n \geq 0 \}
+\]
+Assumo per assurdo che $A$ sia regolare, allora esiste $p$ tale che ogni stringa $s \in A$ può essere scritta come $xyz$ in modo che: $1)\; \forall i \geq 0: xy^iz \in A, \quad 2)\; |y| > 0\quad \text{e}\quad 3)\; |xy| \leq p$. \\\\
+Prendo $s = 0^p1^p$ e mostro che $xy^iz \notin A$ per qualche $i$. Procedo per casi:
+\begin{enumerate}
+	\item $y$ contiene solo $0$. In questo caso $xy^2z \notin A$ perché $xy^2z$ contiene più $0$ che $1$.
+	\item $y$ contiene solo $1$. In questo caso $xy^2z \notin A$ perché $xy^2z$ contiene più $1$ che $0$.
+	\item $y$ sia $0$ che $1$. 
+	\begin{gather*}
+		s = 00\underbracket{01}_{y}11 \\
+		s = 00\underbracket{0101}_{y^2}11
+	\end{gather*}
+	In questo caso $xy^2z \notin A$ perché $xy^2z$ conterrà degli $1$ prima di uno $0$.
+\end{enumerate}
+\example di applicazione del \textit{puming lemma} per verificare la non regolarità di un linguaggio.
+\[
+	C = \{ w \taleche w \text{ ha lo stesso numero di 0 e 1} \}
+\]
+Sia $s = 0^p1^p$. Poiché la parte della stringa che vado a pompare deve occorrere nei primi $p$ caratteri di $s$, $y$ deve contenere solo $0$. Perciò $xy^2z$ contiene più $0$ che $1$, da cui $xy^2z \notin C$.\\\\
+\example di applicazione del \textit{puming lemma} per verificare la non regolarità di un linguaggio.
+\[
+	F = \{ ww \taleche w \in \{0,1\}^* \}
+\]
+Sia $s = 0^p10^p1$. Poiché $|xy| \leq p$, $y$ deve contenere solo $0$, perciò $xy^2z$ contiene più $0$ che $1$, che è lecito, ma rompe la simmetria, da cui $xy^2z \notin F$.\\\\
+\example di applicazione del \textit{puming lemma} per verificare la non regolarità di un linguaggio.
+\[
+	D = \{ 1^{n^2} \taleche n \geq 0 \} \to \text{tutte le stringhe di 1 la cui lunghezza sia un quadrato perfetto}
+\]
+Sia $s = 1^{p^2} = xyz$, allora $|s| = p^2$. Per il terzo punto del \textit{pumping lemma} ($|xy|\leq p$) impostiamo:
+\[
+	|xy^2z| = |xyz| + |y|
+\]
+dove $|xyz| = p^2$, $|y| > 0$ e $|y| < p$.
+Quindi
+\[
+	|xy^2z| \leq p^2 + p < p^2 +2p + 1 = (p+1)^2
+\]
+perciò , poiché $|y|>0$
+\[
+	p^2 < |xy^2z| < (p+1)^2
+\]
+ma allora $|xy^2z|$ non è un quadrato perfetto, e $xy^2z \notin D$.
+\pagebreak
+\section{Esercizi}
+\begin{exercize*}
+	Dimostrare che la classe dei linguaggi regolari è chiusa rispetto alla concatenazione. 
+	\begin{proof}
+		Siano $A$ e $B$ due linguaggi regolari. Poiché sono regolari esisteno due DFA $M$ ed $N$ tali che $L(M) = A$ e $L(N)=B$. Sia $M = (Q_1,\Sigma,\delta_1,q_1,F_1)$ e sia $N = (Q_2,\Sigma,\delta_2,q_2,F_2)$, definisco un DFA $O = (Q,\Sigma,\delta,q_0,F)$ dove:
+		\begin{enumerate}
+			\item $Q = Q_1 \times Q_2$
+			\item $\delta((q_1,q_2),a) = (\delta_1(q_1,a),\delta_2(q_2,a))$
+			\item $q=(q_1,q_2)$
+			\item $F=\{(q_1,q_2) \taleche q_1 \in F_1 \land q_2 \in F_2\} = F_1 \times F_2$
+		\end{enumerate}
+	\end{proof}
+\end{exercize*}
+\begin{exercize*}
+	Dimostrare che $C=\{ w \taleche w \text{ ha lo stesso numero di 0 e 1}\}$ non è regolare, senza utilizzare il \textit{pumping lemma}.
+	\begin{proof}
+		Per assurdo assumo che $C$ sia regolare. Poiché i linguaggi regolari sono chiusi rispetto all'intersezione, la seguente intersezione
+		\[
+			C \cap 0^*1^*
+		\]
+		dovrebbe essere regolare. Ma $C \cap 0^*1^* = \{ 01^n \taleche n \geq 0 \}$ e questo non è regolare, da cui $C$ è non regolare. 
+	\end{proof}
+\end{exercize*}
+\begin{exercize*}
+	Dimostrare che il linguaggio $D=\{ w \taleche w \text{ lo stesso numero di sottostringhe 01 e 10 }\}$ è regolare.
+	\begin{proof}
+		Costruisco un DFA che non ho voglia di inserire...
+	\end{proof}
+\end{exercize*}
+\begin{exercize*}
+	Dimostrare che i linguaggi regolari sono chiusi rispetto all'operazione di complemento $\bar{A} = \{ w \taleche w \notin A \}$.
+	\begin{proof}
+			Sia $A$ un linguaggio regolare. Allora esiste un DFA $M = (Q,\Sigma,\delta,q_0,F)$ tale che $L(M) = A$. Costruisco un altro DFA $N = (Q,\Sigma,\delta,q_0,\nicefrac{Q}{F})$, e osservo che $L(N) = \bar{A}$.
+	\end{proof}
+\end{exercize*}
+\begin{exercize*}
+	Dimostrare che il linguaggio $B=\{ w \taleche w \text{ non contiene la stringa ab }\}$ è regolare.
+	\begin{proof}
+		Costruisco un DFA $N$ tale che $L(N) = \{ w \taleche w \text{ contiene la stringa ab }\}$. Poiché $B = \bar{L(N)}$ concludo la chiusura rispetto al complemento che $B$ è regolare.
+	\end{proof}
+\end{exercize*}
+\begin{exercize*}
+	Dimostrare che il linguaggio $E=\{ 0^i1^j \taleche i > j \}$ è non regolare.
+	\begin{proof}
+		Assumo per assurdo che $E$ sia regolare, allora esiste $p$ tale che ogni stringa $s \in E$ è tale che $|s| > p$ può essere scritta come $xyz$ dove:
+		\begin{enumerate}
+			\item $\forall i xy^iz \in E$
+			\item $|y| > 0$
+			\item $|xy| \leq p$
+		\end{enumerate} 
+	Prendo $s = o^{p+1}1^p$. Poiché $|xy| \leq p$, so che $y$ comprende solo $0$. La stringa $xy^0z \notin E$, perché essa comprende meno di $p+1$ zeri:
+	\[
+	\overbracket{\underbracket{0...0}_{x}}^{p+1}\underbracket{0}_{y}\overbracket{\underbracket{1...1}_{z}}^{p}
+	\]
+	\end{proof}
+\end{exercize*}
+\section{Context-free languages}
+In questo capitolo introdurremo le grammatiche \textit{context-free}, un metodo più potente per descrivere linguaggi.
+\subsection{Context-free grammars}
+Il seguente è un esempio di una grammatica \textit{context-free}, che chiameremo $G_1$:
+\begin{gather*}
+	A \to 0A1 \\
+	A \to B \\
+	B \to \#
+\end{gather*}
+Una grammatica consiste in una collezione di \textit{regole di sostituzione}, anche chiamate \textbf{produzioni}. Ogni regola appare come una linea e comprende un \textit{simbolo} e una stringa, separati da una freccia. Il simbolo è chiamato \textbf{variabile}, mentre le stringhe consistono in altre variabili e simboli, chiamati \textbf{terminali}. I simboli delle variabili spesso sono rappresentate in lettere maiuscole, mentre i terminali sono analoghi all'alfabeto di input e sono spesso rappresentati da lettere minuscole, numeri o caratteri speciali. Una tra le variabili della grammatica è la \textbf{variabile di start}, e solitamente si trova a sinistra della regola più in alto. \\
 
+\noindent
+La grammatica $G_1$ contiene dunque tre produzioni (le tre righe), le sue variabili sono $A$ e $B$, dove $A$ è la variabile di start. I sui terminali sono $0$, $1$ e $\#$. \\
 
+\noindent
+Si utilizza una grammatica per descrivere un linguaggio generando ogni stringa di quel linguaggio nel seguente modo:
+\begin{enumerate}[itemsep=0pt]
+	\item Si scrive la variabile di start
+	\item Si seleziona una della variabili disponibili e la si riscrive come parte destra di una produzione per quella variabile
+	\item Si torna al punto 2 fino a che ci sono ancora variabili disponibili
+\end{enumerate}
+Per esempio la grammatica $G_1$ genera la stringa $000\#111$. La sequenza di sostituzioni per ottenere la stringa viene detta \textbf{derivazione}. La derivazione della stringa $000\#111$ nella grammatica $G_1$ é
+\[
+	A \Rightarrow 0A1  \Rightarrow 00A11 \Rightarrow 000A111 \Rightarrow 000B111 \Rightarrow 000\#111
+\]
+Tutte le stringhe generate in questo modo costituiscono il \textit{linguaggio della grammatica}. Indichiamo con $L(G_1)$ il linguaggio della grammatica $G_1$, che è formalmente definito come $\{ 0^n\#1^n \taleche n \geq 0 \}$. Ogni linguaggio che può essere generato da una grammatica \textit{context-free} è chiamato \textit{context-free language \nolinebreak (CFL)}.\\
 
+\noindent
+Un altro modo per indicare visivamente una grammatica \textit{context-free} sono i \textit{parse tree}
+\begin{center}
+	\includegraphics[width=0.3\linewidth]{images/parse_tree}
+\end{center}
+dove la radice rappresenta la start variable, le foglie i terminali e i nodi intermedi sono dettati dalle produzioni.
+\pagebreak
+\subsubsection{Definizione}
+Una grammatica context-free è una $4$-tupla $(V,\;\Sigma,\;R,\;S)$ dove
+\begin{enumerate}
+	\item $V$ è un insieme finito di variabili
+	\item $\Sigma$ è un insieme finito, disgiunto da $V$, di terminali
+	\item $R$ è un insieme finito di regole (produzioni), dove ogni produzione ha la forma $A \to w$ dove $A \in V$ e $w \in (\Sigma \cup V)^*$, ovvero che $w$ può essere una stringa di terminali e/o variabili
+	\item $S \in V$ è la start variable
+\end{enumerate}
+Siano $u,v,w \in (\Sigma \times V)^*$ e sia $A \to w$ una produzione. Diciamo che $uAv$ produce $uwv$ $(uAv \Rightarrow uwv)$. Diciamo che $u$ deriva da $v$ $(u \derive v)$ sse $u=v$ oppure $\exists w_1,\dots,w_n \taleche u \Rightarrow w_1 \Rightarrow \dots \Rightarrow w_n \Rightarrow v$.  \\
+
+\noindent
+Data una grammatica $G = (V,\;\Sigma,\;R,\;S)$, definiamo il linguaggio generato da $G$ come l'insieme delle stringhe di terminali derivabili dalla start variable:
+\[
+	L(G) = \{ w \in \Sigma^* \taleche S \derive w \}
+\]
+
+\example Dato $G = (\{S\},\{a,b\},R,S)$, dove $R$ è definito da $S \to aSb \taleche SS \taleche \varepsilon$, determinare alcune stringhe che può comporre.
+\begin{itemize}
+	\item $abab: \qquad S \To SS \To aSbS \To abS \To abaSb \To abab$
+	\item $aabb: \qquad S \To aSb \To aaSbb \To aabb$
+\end{itemize}
+Supponendo quindi che $a$ rappresenti la parentesi sinistra "(" e $b$ quella destra ")", il linguaggio di $G$ è quello di tutte le stringhe le cui parentesi siano annidate correttamente. \\
+
+\example Generare il \textit{parse tree} che generi $a+a\times a$ dati
+\begin{itemize}
+	\item $E \To E + T \taleche T$
+	\item $T \To T \times F \taleche F$
+\end{itemize}
+\begin{center}
+	\includegraphics[width=0.3\linewidth]{images/parse_tree_1}
+\end{center}
+\pagebreak
+\subsubsection{Ambiguità}
+Una grammatica è \textit{ambigua} se e solo se esiste $w \in L(G)$ con almeno due \textit{leftmost} diversi. Per \textit{leftmost} si s'intende che nel processo di derivazione ( e di conseguenza nel \textit{parse tree}) scrivo il terminale a sinistra.\\
+
+\example Dato $E \to E+E \taleche E \times E \taleche a \taleche (E)$, verificare che sia ambiguo.\\
+
+\noindent 
+A questo punto sviluppo due \textit{parse tree}, e dal momento che ottengo la stessa stringa "$a+a\times a$" in due modi differenti, concludo che la grammatica è ambigua.
+\begin{center}
+	\includegraphics[width=0.5\linewidth]{images/parse_tree_2}
+\end{center}
+\subsection{Forma normale di Chomsky}
+Un \textit{context-free language} è in forma normale di Chomsky se ogni sua produzione ha la forma $A \to BC$ oppure $A \to a$ con l'eccezione che $B,C$ non possono essere la variabile di start. Inoltre ammettiamo $S \to \varepsilon$ dove $S$ è la start variable.
+
+\begin{theorem*}
+	Ogni linguaggio context-free è generabile da una grammatica context-free in forma normale di Chomsky. [vedi pag 99, theorem 2.6]
+	\begin{proof}
+		Definiamo un algoritmo per convertire una CFG qualsiasi in forma normale:
+		\begin{enumerate}
+			\item Sia $S$ lo start symbol, invento un nuovo start symbol $S' \to S$
+			\item Sia $A \to \varepsilon$ una $\varepsilon$-produzione con $A \neq S$. Allora cancello $A \to \varepsilon$ e in tutti i punti in cui $A$ occorre, aggiungo una nuova produzione dove $A$ è cancellata per ogni possibile occorrenza di $A$, ovvero
+				\begin{gather*}
+			\begin{flalign*}
+			R \to uAwAv \rightsquigarrow & R \to uAwAv \text{ non cancello occorrenze di $A$} & \\
+			& R \to uwAv \text{ cancello 1 occorrenza di $A$} \\
+			& R \to uAwv \text{ cancello 2 occorrenze di $A$} \\
+			& R \to uwv \text{ cancello 3 occorrenze di $A$} 
+			\end{flalign*}
+			\end{gather*}
+			Se avessi
+			\begin{gather*}
+			\begin{flalign*}
+			R \to A \rightsquigarrow & R \to A & \\
+			& R \to \varepsilon 
+			\end{flalign*}
+			\end{gather*}
+			\item Elimina le produzioni unitarie della forma $A\to B$ se esiste $A\to B$ e $B \to w_1 \taleche \dots \taleche w_n$, cancella $A\to B$ e sostituiscilo con $A \to w_1 \taleche \dots \taleche w_n$.
+			\item A questo punto tutte le produzioni della grammatica hanno almeno due simboli a destra.
+			\item Nelle regole precedenti rimpiazzo ogni terminale $u_i$ con $1 \leq i \leq k$ con un non terminale $U_i$ e aggiungi $U_i \to u_i$
+		\end{enumerate}
+	\end{proof}
+\end{theorem*}
+\pagebreak
+\example Normalizzazione il CFG $G$ nella forma normale di Chomsky. 
+\begin{enumerate}
+	\item Il CFG è mostrato sulla sinistra. Il risultato dell'applicazione del primo step per creare un nuovo start symbol appare sulla destra.
+		\begin{gather*}
+			\begin{align*}
+				\begin{split}
+					& A \to ASA \taleche aB \\
+					& A \to B \taleche S \\
+					& B \to b \taleche \varepsilon
+				\end{split}
+				&
+				\begin{split}
+					& S_0 \to S \\
+					& A \to ASA \taleche aB \\
+					& A \to B \taleche S \\
+					& B \to b \taleche \varepsilon
+				\end{split}
+			\end{align*}
+		\end{gather*}
+	\item Rimuovendo le $\varepsilon$-produzioni $B \to \varepsilon$ sulla sinistra, e $A \to \varepsilon$ sulla destra:
+		\begin{gather*}
+		\begin{align*}
+		\begin{split}
+		& S_0 \to S \\
+		& S \to ASA \taleche aB \taleche a \\
+		& A \to B \taleche S \taleche \varepsilon \\
+		& B \to b \taleche \varepsilon
+		\end{split}
+		&
+		\begin{split}
+		& S_0 \to S \\
+		& S \to ASA \taleche aB \taleche a \taleche SA \taleche AS \taleche S\\
+		& A \to B \taleche S \taleche \varepsilon \\
+		& B \to b 
+		\end{split}
+		\end{align*}
+		\end{gather*}
+	\item Rimuovendo le produzioni unitarie $S \to S$, sulla sinistra e $S_0 \to S$ sulla destra:
+			\begin{gather*}
+	\begin{align*}
+	\begin{split}
+	& S_0 \to S \\
+	& S \to ASA \taleche aB \taleche a \taleche SA \taleche AS \taleche S \\
+	& A \to B \taleche S \\
+	& B \to b
+	\end{split}
+	&
+	\begin{split}
+	& S_0 \to S \taleche ASA \taleche aB \taleche a \taleche SA \taleche AS \\
+	& S \to ASA \taleche aB \taleche a \taleche SA \taleche AS \\
+	& A \to B \taleche S\\
+	& B \to b 
+	\end{split}
+	\end{align*}
+	\end{gather*}
+	\item Rimuovendo le produzioni unitarie $A\to B$ e $A\to S$:
+	\begin{gather*}
+	\begin{align*}
+	\begin{split}
+	& S_0 \to ASA \taleche aB \taleche a \taleche SA \taleche AS \\
+	& S \to ASA \taleche aB \taleche a \taleche SA \taleche AS \\
+	& A \to B \taleche S \taleche b \\
+	& B \to b
+	\end{split}
+	&
+	\begin{split}
+	& S_0 \to ASA \taleche aB \taleche a \taleche SA \taleche AS \\
+	& S \to ASA \taleche aB \taleche a \taleche SA \taleche AS \\
+	& A \to S \taleche b \taleche ASA \taleche aB \taleche a \taleche SA \taleche AS \\
+	& B \to b
+	\end{split}
+	\end{align*}
+	\end{gather*}
+	\item Convertiamo le produzioni rimanenti nella forma corretta aggiungendo le variabili e le produzioni necessarie. Il risultato finale è
+		\begin{gather*}
+	S_0 \to AA_1 \taleche UB \taleche a \taleche SA \taleche AS \\
+	S \to AA_1 \taleche UB \taleche a \taleche SA \taleche AS \\
+	A \to B \taleche AA_1 \taleche UB \taleche a \taleche SA \taleche AS \\
+	A_1 \to SA \\
+	U \to a \\
+	B \to b
+	\end{gather*}
+\end{enumerate}
+
+\pagebreak
+\section{Push-down automata}
+In questa sezione introdurremo i \textit{pushdown automata}. Questi automi sono simili agli automi finiti non deterministici, ma hanno un componente in più chiamato stack. Lo stack fornisce memoria addizionale a quella finita disponibile ni NFA. Lo stack permette dunque a questi speciali automi di riconoscere alcuni linugaggi non regolari. Gli autocmi \textit{pushdown} sono equivalenti in espressività alle grammatiche \textit{context-free}.
+\begin{center}
+	\includegraphics[width=0.4\linewidth]{images/pushdown_automata}
+\end{center}
+Notiamo che l'alfabeto dello stack e di input possono essere differenti.
+\subsection{Definizione}
+Un automa \textit{pushdown} è una $6$-tupla $(Q,\;\Sigma,\;\varGamma,\;\delta,\;q_0,\;F)$ dove
+\begin{enumerate}
+	\item $Q$ è un insieme finito di stati
+	\item $\Sigma$ è un insieme finito di simboli di input
+	\item $\varGamma$ è un insieme finito di simboli per lo stack
+	\item $\delta: Q \times (\Sigma \cup \{\varepsilon\})\times(\varGamma \cup \{ \varepsilon\}) \to \powerset{Q \times (\varGamma \cup \{\varepsilon\})}$
+	\item $q_0 \in Q$ è lo stato iniziale
+	\item $F \subseteq Q$ è l'insieme degli stati finali
+\end{enumerate}
+Un PDA $M = (Q,\;\Sigma,\;\varGamma,\;\delta,\;q_0,\;F)$ accetta l'input $w$ se $w$ si può scrivere come $w_1w_2...w_n$ dove $\forall i \; w_i \in \Sigma \cup \{\varepsilon\}$ (ovvero come negli NFA posso avere $\varepsilon$-transizioni spontanee) ed esiste una sequenza di stati $r_0,r_1,\dots,r_n \in Q$ e stack $s_0,s_1,\dots,s_n \in \varGamma^*$ tali che:
+\begin{enumerate}
+	\item $r_0 = q_0$ e $s_0 = \varepsilon$, ovvero che $M$ inizia nello stato iniziale e con lo stack vuoto
+	\item $r_n \in F$, ovvero che $M$ finisce di computare in uno stato accettante dopo aver concluso di leggere l'input
+	\item $\forall i \in [0,n-1]:\;(r_{i+1},b) \in \delta(r_1,w_{i+1},a)$ dove $s_i = at$ e $s_{i+1} = bt$ per qulche $a,b \in \varGamma \cup \{\Sigma\}$ e $t \in \varGamma^*$. Ovvero che per tutti gli stati, lo stato successivo ($r_{i+1}$) è calcolato dallo stato precedente e dal successivo simbolo di input ($\delta(r_i,w_{i+1})$). Però in ogni momento posso leggere un simbolo dallo stack e aggiornare lo stato dello stack. Quindi valuto sia chi transita dallo stato sia il carattere $a$ in cima allo stack dello stato corrente nel tempo $i$ (enllo stato $r_i$). Nello stato successivo voglio aggiornare $a$ con $b$ (pop di $a$ e push di $b$). Però non vengono sempre fatte push e pop perché possono esserci anche le $\varepsilon$-transizioni e al posto di $a$ e $b$ possono esserci tre casi:
+	\begin{enumerate}
+		\item $a=\varepsilon,b \neq \varepsilon$: push
+		\item $a\neq\varepsilon,b = \varepsilon$: pop
+		\item $a=\varepsilon,b =\varepsilon$: non modifico lo stack, ma faccio un $\varepsilon$-transizione
+	\end{enumerate}
+\end{enumerate}
+\pagebreak
+\example Trovare un PDA che riconosca il linguaggio $\{ 0^n1^n \taleche n \geq 0 \}$. \\
+
+\noindent
+L'idea è che se leggo $0$ riempio lo stack, mentre leggendo $1$ lo svuoto. Mantengo un simbolo di flag ($\$$) che mi indica quando lo stack è vuoto, e quando arrivo alla fine dell'input se lo stack è vuoto significa che l'input viene riconosciuto.
+\begin{center}
+	\includegraphics[width=0.4\linewidth]{images/pda}
+\end{center}
+Quando scriviamo $a,b \to c$ significa che quando l'automa sta leggendo un $a$ dall'input, può rimpiazzare il simbolo $b$ nella testa dello stack con il simbolo $c$. Sia $a$ che $b$ e $c$ possono essere $\varepsilon$. Se $a = \varepsilon$, l'automa esegue la transizione senza leggere nessun simbolo dall'input. Se $b=\varepsilon$ l'automa può eseguire la transizione senza leggere dall'input e prendere il primo simbolo dallo stack. Se $c=\varepsilon$ l'automa non scrive nessun simbolo nello stack eseguendo questa transizione. \\
+
+\example Determinare il PDA che riconosce il linguaggio
+\[
+	\{ ww^R \taleche w \in \{0,1\}^* \}\qquad \text{dove } w^R \text{ equivale ad $w$ rovesciato (reverse)}
+\]
+Il DFA deve riconoscere quindi, ad esempio, la stringa $\underbracket{100}_{w}\overbracket{001}^{w^R}$
+\begin{center}
+	\includegraphics[width=0.4\linewidth]{images/pda-1}
+\end{center}
+
+\begin{theorem*}
+	Un linguaggio è \textit{context-free} se e solo se è riconosciuto da un PDA.
+	\begin{proof}
+		Se un linguaggio è \textit{context-free} allora è riconosciuto da un PDA. Intuitivamente, se esiste un linguaggio è \textit{context-free}, esiste una grammatica $G$ che lo genera. Diamo una definizione informale del PDA:
+		\begin{enumerate}
+			\item Metti sullo stack "\$" seguito da $S$, dove $S$ è lo \textit{start symbol} della grammatica
+			\item Ripeti i seguenti passi
+				\begin{enumerate}
+					\item Se in cima allo stack ho $A$, scegli una produzione $A \to w$ e sostituisci $A$ con $w$
+					\item Se in cima allo stack ho $a$, confrontalo con il prossimo carattere in input e fai la pop se sono uguali, fallisci termina questo ramo del non determinismo
+					\item Se in cima allo stack ho "\$" ed ho finito l'input, accetta
+				\end{enumerate}
+		\end{enumerate}
+		Per semplificare la definizione che andremo a vedere, occorre introdurre una notazione sharthand, più compatta, che ci permette di fare il push di stringhe intere anziché di singoli caratteri.
+		\begin{center}
+			\begin{figure}[h]
+				\centering
+				\includegraphics[width=0.5\linewidth]{images/pda-shorthand}
+				\caption[Implementazione della shorthand $(r,xyz) \in \delta(q,a,s)$]{Implementazione della shorthand $(r,xyz) \in \delta(q,a,s)$}
+				\label{fig:pda-shorthand}
+			\end{figure}
+	\end{center}
+	Sia l'immagine lo schema che ci permette di fare il push di una stringa e sia $E$ l'insieme degli stati ausiliari utilizzati per simulare le transizioni necessarie per pushare una stringa e non un carattere. \\
+	
+	\noindent
+	Sia $Q = \{q_{start},q_{loop},q_{accept}\} \cup E$ e sia definita la funzione di transizione come
+	\begin{gather*}
+		\delta(q_{start},\varepsilon,\varepsilon) = \{ q_{loop}, S\$ \} \\
+		\delta(q_{loop},\varepsilon,A) = \{ q_{loop}, w \taleche A \to w \text{ è una produzione} \} \\
+		\delta(q_{loop},a,a) = \{ q_{loop}, \varepsilon \} \\
+		\delta(q_{loop},\varepsilon,\$) = \{ q_{accept}, \varepsilon \} 
+	\end{gather*}
+	\begin{center}
+		\begin{figure}[h]
+			\centering
+			\includegraphics[width=0.5\linewidth]{images/pda-delta}
+			\caption[Diagramma di stato di $Q$]{Diagramma di stato di $Q$}
+			\label{fig:pda-delta}
+		\end{figure}
+	\end{center}
+	\end{proof}
+	\begin{proof}
+		Se un li linguaggio è riconoscibile da un PDA, allora è \textit{context-free}. Ci focalizziamo su un PDA con tre caratteristiche:
+		\begin{enumerate}
+			\item Ha un unico stato finale $q_{accept}$
+			\item Svuota lo stack prima di accettare
+			\item Ogni transizione è o una push o una pop, ma mai entrambe contemporaneamente
+		\end{enumerate} 
+		L'idea è che per ogni coppia di stati $p$ e $q$ del PDA, invento una variabile $A_{pq}$ che genera tutte le stringhe che portano il PDA da $p$ a $q$ con lo stack vuoto. Quindi dato un input $x$ il PDA farà come prima mossa una push e come ultima mossa una pop, dal momento che inizio e termino con lo stack vuoto.
+		\begin{itemize}
+			\item Se il carattere che poppo alla fine è lo stesso che ho pushato all'inizio, lo stack non si è mai svuotato. Simulo con 
+			\begin{gather*}
+				a = \text{primo carattere letto} \\
+				b = \text{ultimo carattere letto} \\
+				r = \text{stato dopo di $p$} \\
+				s = \text{stato prima di $q$} \\
+			\end{gather*}
+			allora 
+			\[
+				A_{pq} \to aA_{rs}b
+			\]
+			\begin{center}
+				\includegraphics[width=0.7\linewidth]{images/pda-ars}
+			\end{center}
+			\item Altrimenti esiste uno stato $r$ dove lo stack si è svuotato. Simulo con:
+			\[
+				A_{pq} \to A_{pr}A_{rq}
+			\]
+			\begin{center}
+				\includegraphics[width=0.7\linewidth]{images/pda-apr}
+			\end{center}
+		\end{itemize}
+	\end{proof}
+\end{theorem*}
+	\noindent
+	Sia $P = (Q,\Sigma,\varGamma,\delta,q_0,\{q_{accept}\})$ un PDA delle forma specificata. Le variabili della grammatica sono 
+	\[
+		\{ A_{pq} \taleche p,q \in Q\}
+	\]
+	mentre le produzioni sono
+	\begin{enumerate}
+		\item Per ogni $p,q,r,s \in Q$ e per ogni $a,b \in \Sigma \cup \{\varepsilon\}$, se $(r,u) \in \delta(p,a,\varepsilon)$ e $(q,\varepsilon) \in \delta(s,b,u)$
+		\item Per ogni $p,q,r,s \in Q$, aggiungi $A_{pq} \to A_{pr}A_{rq}$
+		\item Per ogni $p \in Q$ aggiungi $A_{pp} \to \varepsilon$
+	\end{enumerate}
 \end{document}
