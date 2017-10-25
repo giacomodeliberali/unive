@@ -1418,7 +1418,7 @@ insert(dizionario $S$, chiave $v$, valore $v$)
 \end{lstlisting}
 Determino la complessità di \textit{insert}:
 \[
-	T(n) = c + \varOmicron(n) + d_i + d(n-i) = c + \varOmicron(n) + \varTheta(n) = \varTheta(n)
+	T(n) = c + \varOmicron(n) + d_i + d(n-i) = c + \varOmicron(n) = \varTheta(n)
 \]
 \subsubsection{Implementazione di \textit{delete}}
 \begin{lstlisting}[language=c,mathescape=true]
@@ -1453,7 +1453,7 @@ Andiamo a realizzare un astruttura data basata su una collezione $L$ di $n$ reco
 \subsubsection{Implementazione di \textit{insert}}
 Questo metodo prevede l'interimento in testa, in quanto risulta essere l'operazione più veloce ed efficiente con questo dipo di struttura dati.
 \begin{lstlisting}[language=c,mathescape=true]
-delete(dizionario $L$, chiave $k$, valore $v$)
+insert(dizionario $L$, chiave $k$, valore $v$)
 	p = nuovo record con chiave $k$ e valore $v$
 	p.next = L.head;
 	if(L.head != null)
@@ -1537,7 +1537,7 @@ Per prima cosa, per calcolare la compelssità di $A$, dobbiamo determinare quell
 \]
 ora calcoliamo quella di $A$:
 \[
-	T_A(n) = \sum_{i=1}^{n}c\cdot i = c \cdot \sum_{i=1}^{n} i = \frac{n(n+1)}{2} = \varTheta(n^2) 
+	T_A(n) = \sum_{i=1}^{n}c\cdot i = c \cdot \sum_{i=1}^{n} i = c \cdot \frac{n(n+1)}{2} = \varTheta(n^2) 
 \]
 Abbiamo notato che la funzione $A$ somma i primi $n$ numeri interi, ma con complessità $n^2$ risulta essere estrememente inefficiente. Si sarebbe potuto risolvere in tempo costante con l'operazione $\frac{n(n+1)}{2}$. La funzione $B$ invece è la funzione identità, ovvero $B(m) = m$.
 
