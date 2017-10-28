@@ -77,6 +77,7 @@
 \newcommand{\dateright}[1]{\normalfont{\normalsize{\hfill #1 \\}}}
 \renewcommand{\dim}[1]{\text{dim$\left(#1\right)$}}
 \newcommand{\taleche}{\;|\;}
+\newcommand{\len}[1]{\text{$|#1|$}}
 \newtheorem*{theorem*}{Teorema}
 \newtheorem*{definition*}{Definizione}
 \newtheorem*{corollary*}{Corollario}
@@ -898,13 +899,13 @@ Un \textit{context-free language} è in forma normale di Chomsky se ogni sua pro
 \end{enumerate}
 
 \pagebreak
-\section{Push-down automata}
+\subsection{Push-down automata}
 In questa sezione introdurremo i \textit{pushdown automata}. Questi automi sono simili agli automi finiti non deterministici, ma hanno un componente in più chiamato stack. Lo stack fornisce memoria addizionale a quella finita disponibile ni NFA. Lo stack permette dunque a questi speciali automi di riconoscere alcuni linugaggi non regolari. Gli autocmi \textit{pushdown} sono equivalenti in espressività alle grammatiche \textit{context-free}.
 \begin{center}
 	\includegraphics[width=0.4\linewidth]{images/pushdown_automata}
 \end{center}
 Notiamo che l'alfabeto dello stack e di input possono essere differenti.
-\subsection{Definizione}
+\subsubsection{Definizione}
 Un automa \textit{pushdown} è una $6$-tupla $(Q,\;\Sigma,\;\varGamma,\;\delta,\;q_0,\;F)$ dove
 \begin{enumerate}
 	\item $Q$ è un insieme finito di stati
@@ -1029,4 +1030,38 @@ Il DFA deve riconoscere quindi, ad esempio, la stringa $\underbracket{100}_{w}\o
 		\item Per ogni $p,q,r,s \in Q$, aggiungi $A_{pq} \to A_{pr}A_{rq}$
 		\item Per ogni $p \in Q$ aggiungi $A_{pp} \to \varepsilon$
 	\end{enumerate}
-\end{document}
+	%% Puming Lemma per CFL
+	\subsection{Pumping lemma}
+	Se $A$ è un linguaggio \textit{context-free} esiste un numero $p$ (\textit{pumping length}) tale che per ogni $i \in A$ tale che $\len{s} \geq p$ abbiamo che $s = uvxyz$, dove:
+	\begin{enumerate}
+		\item $\forall i \geq 0 : uv^ixy^iz \in A$
+		\item $|vy| > 0$
+		\item $|vxy| \leq p$		
+	\end{enumerate}
+	\subsubsection{Proof idea}
+	Sia $A$ un linguaggio \textit{context-free} e sia $G$ una \textit{context-free grammar} che lo descrive. Dobbiamo dimostrare che qualunque stringa sufficientemente lunga può essere pompata e rimanere in $A$.\\
+	
+	\noindent
+	Sia $s$ una stringa molto lunga in $A$ (dopo definiremo il quanto lunga). Poiché $s \in A$ è derivabile da $G$, ha un \textit{parse-tree}. Il \textit{parse-tree} deve essere molto alto in quanto $s$ è molto lunga. Il \textit{parse-tree} deve dunque contenere un cammino dalla \textit{start variabile} alla radice dell'albero ad un simbolo terminale in una foglia. In questo lungo cammino qualche variabile $R$ deve ripetersi per il \href{https://it.wikipedia.org/wiki/Principio_dei_cassetti}{principio dei cassetti}. Come mostra le figura seguente questa ripetizione ci permette di rimpiazzare il sottoalbero sotto la seconda occorrenza di $R$ con il sottoalbero sotto la prima occorrenza di $R$ e continuare ad avere un \textit{parse-tree} valido e legale. \\
+	
+	\noindent
+	Pertanto possiamo dividere $s$ in cinque pezzi $vuxyz$ come indica la figura, e possiamo ripetere il secondo e il quarto pezzo ottenendo una stringa ancora nel linguaggio. In altre parole $uv^ixy^iz \in A \forall i \geq 0$. 
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[width=0.7\linewidth]{images/parse_tree_cfl}
+		\caption[Rimpiazzamento dei \textit{parse-trees}]{Rimpiazzamento dei \textit{parse-trees}}
+		\label{fig:parsetreecfl}
+	\end{figure}
+	\noindent
+	Andiamo ora a definire i dettagli per ottenere le tre condizioni del \textit{pumping lemma} e per calcolare il \textit{pumping length} $p$.
+	\subsubsection{Dimostrazione}
+	Sia $G$ una CFG per il CFL $A$. Sia $b$ la lunghezza massima dei simboli nella parte destra delle produzioni, per assunzione sia $b \geq 2$. In ogni \textit{parse-tree} utilizzando questa grammatica sappiamo che un nodo non può avere più di $b$ figli. In altre parole al massimo $b$ foglie sono alla distanza di $1$ passo dalla radice; al massimo $b^2$ foglie sono al massimo a $2$ passi dalla radice; al massimo $b^h$ foglie sono al massimo a $h$ passi dalla radice.Quindi se l'altezza del \textit{parse-tree} è al massimo $h$, la lunghezza della stringa generata è al massimo $b^h$. \\
+	%% HEREE ------------------------
+	Sia $\len{V}$ il numero di variabili in $G$. Definiamo $p = b^{\len{V}+2}$. Poiché $b \geq 2$, sappiamo che $p > b^{\len{V}+1}$. Dobbiamo dimostrare che $b^{\len{V}+1} \geq b^{\len{V}}+1$.
+	\[
+		b^{\len{V}+1} = b^{\len{V}}\cdot b \geq 2b^{\len{V}} = b^{\len{V}} \cdot b^{\len{V}} \geq b^{\len{V}} + 1
+	\]
+	Prendiamo una stringa $s \in A : \len{s} > p$. Il suoi \textit{parse-trees} hanno altezza al massimo $\len{V} + 1$. Ci focalizziamo sul parse-tree con il minimo numero di nodi e consideriamo il cammino più lungo dalla radice ad una foglia: sicuramente questo cammino comprende almeno $\len{V} + 2$ simboli. Fra questi simboli almeno uno è non terminale (per definizione di parse-tree). Poiché abbiamo $\len{V}$ non terminali, almeno uno fra di essi si deve ripetere.
+	
+
+	\end{document}
