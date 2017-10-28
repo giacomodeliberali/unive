@@ -1031,7 +1031,7 @@ Il DFA deve riconoscere quindi, ad esempio, la stringa $\underbracket{100}_{w}\o
 		\item Per ogni $p \in Q$ aggiungi $A_{pp} \to \varepsilon$
 	\end{enumerate}
 	%% Puming Lemma per CFL
-	\subsection{Pumping lemma}
+	\subsection{Pumping lemma per CFL}
 	Se $A$ è un linguaggio \textit{context-free} esiste un numero $p$ (\textit{pumping length}) tale che per ogni $i \in A$ tale che $\len{s} \geq p$ abbiamo che $s = uvxyz$, dove:
 	\begin{enumerate}
 		\item $\forall i \geq 0 : uv^ixy^iz \in A$
@@ -1045,23 +1045,60 @@ Il DFA deve riconoscere quindi, ad esempio, la stringa $\underbracket{100}_{w}\o
 	Sia $s$ una stringa molto lunga in $A$ (dopo definiremo il quanto lunga). Poiché $s \in A$ è derivabile da $G$, ha un \textit{parse-tree}. Il \textit{parse-tree} deve essere molto alto in quanto $s$ è molto lunga. Il \textit{parse-tree} deve dunque contenere un cammino dalla \textit{start variabile} alla radice dell'albero ad un simbolo terminale in una foglia. In questo lungo cammino qualche variabile $R$ deve ripetersi per il \href{https://it.wikipedia.org/wiki/Principio_dei_cassetti}{principio dei cassetti}. Come mostra le figura seguente questa ripetizione ci permette di rimpiazzare il sottoalbero sotto la seconda occorrenza di $R$ con il sottoalbero sotto la prima occorrenza di $R$ e continuare ad avere un \textit{parse-tree} valido e legale. \\
 	
 	\noindent
-	Pertanto possiamo dividere $s$ in cinque pezzi $vuxyz$ come indica la figura, e possiamo ripetere il secondo e il quarto pezzo ottenendo una stringa ancora nel linguaggio. In altre parole $uv^ixy^iz \in A \forall i \geq 0$. 
-	\begin{figure}[h!]
+	Pertanto possiamo dividere $s$ in cinque pezzi $vuxyz$ come indica la figura, e possiamo ripetere il secondo e il quarto pezzo ottenendo una stringa ancora nel linguaggio. In altre parole $uv^ixy^iz \in A \; \forall i \geq 0$. 
+	\begin{figure}[h]
 		\centering
 		\includegraphics[width=0.7\linewidth]{images/parse_tree_cfl}
-		\caption[Rimpiazzamento dei \textit{parse-trees}]{Rimpiazzamento dei \textit{parse-trees}}
+		\caption[Rimpiazzamento dei \textit{parse-tree}]{Rimpiazzamento dei \textit{parse-tree}}
 		\label{fig:parsetreecfl}
 	\end{figure}
-	\noindent
-	Andiamo ora a definire i dettagli per ottenere le tre condizioni del \textit{pumping lemma} e per calcolare il \textit{pumping length} $p$.
-	\subsubsection{Dimostrazione}
-	Sia $G$ una CFG per il CFL $A$. Sia $b$ la lunghezza massima dei simboli nella parte destra delle produzioni, per assunzione sia $b \geq 2$. In ogni \textit{parse-tree} utilizzando questa grammatica sappiamo che un nodo non può avere più di $b$ figli. In altre parole al massimo $b$ foglie sono alla distanza di $1$ passo dalla radice; al massimo $b^2$ foglie sono al massimo a $2$ passi dalla radice; al massimo $b^h$ foglie sono al massimo a $h$ passi dalla radice.Quindi se l'altezza del \textit{parse-tree} è al massimo $h$, la lunghezza della stringa generata è al massimo $b^h$. \\
-	%% HEREE ------------------------
-	Sia $\len{V}$ il numero di variabili in $G$. Definiamo $p = b^{\len{V}+2}$. Poiché $b \geq 2$, sappiamo che $p > b^{\len{V}+1}$. Dobbiamo dimostrare che $b^{\len{V}+1} \geq b^{\len{V}}+1$.
-	\[
-		b^{\len{V}+1} = b^{\len{V}}\cdot b \geq 2b^{\len{V}} = b^{\len{V}} \cdot b^{\len{V}} \geq b^{\len{V}} + 1
-	\]
-	Prendiamo una stringa $s \in A : \len{s} > p$. Il suoi \textit{parse-trees} hanno altezza al massimo $\len{V} + 1$. Ci focalizziamo sul parse-tree con il minimo numero di nodi e consideriamo il cammino più lungo dalla radice ad una foglia: sicuramente questo cammino comprende almeno $\len{V} + 2$ simboli. Fra questi simboli almeno uno è non terminale (per definizione di parse-tree). Poiché abbiamo $\len{V}$ non terminali, almeno uno fra di essi si deve ripetere.
-	
 
+	\noindent
+	Andiamo ora a definire i dettagli per ottenere le tre condizioni del \textit{pumping lemma} e per calcolare il \textit{pumping length}~$p$.
+	\pagebreak
+	\subsubsection{Dimostrazione}
+	Sia $G$ una CFG per il CFL $A$. Sia $b$ la lunghezza massima dei simboli nella parte destra delle produzioni, per assunzione $b \geq 2$. In ogni \textit{parse-tree} utilizzando questa grammatica sappiamo che un nodo non può avere più di $b$ figli. In altre parole al massimo $b$ foglie sono alla distanza di $1$ passo dalla radice; al massimo $b^2$ foglie sono al massimo a $2$ passi dalla radice; al massimo $b^h$ foglie sono al massimo a $h$ passi dalla radice.Quindi se l'altezza del \textit{parse-tree} è al massimo $h$, la lunghezza della stringa generata è al massimo $b^h$. \\
+	
+	\noindent
+	Sia $\len{V}$ il numero di variabili in $G$. Definiamo $p = b^{\len{V}+2}$. Poiché $b \geq 2$, sappiamo che $p > b^{\len{V}+1}$, quindi un \textit{parse-tree} per una stringa di $A$ di lunghezza almeno $p$ richiede un'altezza di almeno $\len{V} + 2$. Supponiamo che $s$ sia una stringa di $A$ con lunghezza almeno $p$. Ora mostreremo come pompare $s$. \\
+	
+	\noindent
+	Sia $\tau$ un \textit{parse-tree} per $s$. Se $s$ ha più di un \textit{parse-tree} prendiamo in considerazione quello con il minor numero di nodi. Siccome $\len{s} > p$, sappiamo che $\tau$ ha altezza almeno $\len{V}+2$, quindi il cammino più lungo è di lunghezza almeno $\len{V}+2$. Questo cammino deve avere almeno $\len{V}+1$ variabili in quando solo la foglia è terminale. Con $G$ che ha solo $\len{V}$ variabili, qualche variabile $R$ appare più di una volta nel cammino. Per convenienza prendiamo $R$ in modo che sia la variabile che si ripete nelle $\len{V}+1$ variabili più in basso nel cammino. \\
+	
+	\noindent
+	Dividiamo $s$ come mostrato in Figura~\ref{fig:parsetreecfl}. Ogni occorrenza di $R$ ha un sottoalbero sotto di essa, generando così una parte della stringa $s$. L'occorrenza più in alto di $R$ ha un sottoalbero più grande e genera $vxy$, mentre l'occorrenza più in basso genera solo $x$ con un sottoalbero più piccolo. Entrambi questi sotto-alberi sono generati dalla stessa variabile, quindi noi potremmo sostituirli uno con l'altro e ottenere comunque un \textit{parse-tree} valido. Rimpiazzando il sottoalbero più piccolo con quello più grande ripetutamente otteniamo un \textit{parse-tree} che genera le stringhe $uv^ixy^iz \; \forall i > 1$. Rimpiazzando il più grande con il più piccolo otteniamo invece la stringa $uxz$. Questo soddisfa la condizione 1 del pumping lemma. Andiamo ora a vedere come soddisfare le altre due condizioni.\\
+	
+	\noindent
+	Per ottenere la condizione 2 dobbiamo essere sicuri che entrambi $v$ e $y$ siano non $\varepsilon$. Se lo fossero il parse-tree ottenuto sostituendo il sottoalbero più piccolo con quello più grande avrebbe meno nodi di $\tau$ e genererebbe comunque $s$. Ma questo è impossibile in quanto avevamo già scelto il parse-tree in modo che fosse quello con il minor numero di nodi. \\
+	
+	\noindent
+	Per soddisfare il punto 3 dobbiamo essere sicuri che $vxz$ abbia lunghezza al massimo $p$. Nel parse-tree di $s$ l'occorrenza più in alto di $R$ genera $vxz$. Abbiamo scelto $R$ in modo che entrambe le occorrenze fossero nelle $\len{V}+1$ variabili più in basso del cammino, e abbiamo scelto il più lungo cammino nel parse-tree, quindi il sottoalbero dove $R$ genera $vxz$ è al massimo alto $\len{V}+2$. Un albero di questa altezza può generare una stringa di lunghezza massima $b^{\len{V}+2} = p$. 
+	
+	\linea
+	\example Utilizzare il pumping lemma per dimostrare che il linguaggio $B = \{ a^nb^nc^n \taleche n > \geq 0 \}$ è non context-free. \\
+	
+	\noindent
+	Assumo per assurdo che $B$ sia \textit{context-free} per ottenere una contraddizione. Sia $p$ il pumping-length, la cui esistenza è garantita dal pumping lemma per i CFL. Prendiamo la stringa $s = a^pb^pc^p$. Chiaramente $s \in B$ e $\len{s} > p$. Il pumping lemma ci dice che $s$ può essere pompata, ma dimoreremo che in realtà non è così. Il altre parole verificheremo che in qualunque modo dividiamo $s$ in $uvxyz$, una delle tre condizioni del lemma viene violata. \\
+	Per prima cosa verifichiamo lo condizione 2, ovvero che sia $v$ che $y$ sono non vuoti. Consideriamo uno di questi due casi, in funzione di cosa contengono le sotto stringhe $v$ e $y$ (possono contenere solo un tipo di simbolo dell'alfabeto, oppure più di uno).
+	\begin{enumerate}
+		\item Quando entrambi $v$ e $y$ contengono solo un tipo di simbolo, esiste almeno un simbolo che non occorre ne in $v$ ne in $y$. Ma allora $uv^ixy^iz$ avrà almeno un simbolo con troppe/troppo poche occorrenze rispetto agli altri due, e quindi  $uv^ixy^iz \notin B$.
+		\item Quando sia $v$ che $y$ contengono più di un tipo di simbolo  $uv^2xy^2z$ potrebbe contenere il numero corretto di occorrenze per tutti e tre i simboli dell'alfabeto, ma non li conterrà nel gusto ordine. Quindi  non può essere un membro di $B$. 
+	\end{enumerate}
+	Qui abbiamo dunque una contraddizione. Poiché entrambi questi casi si concludono con una contraddizione, l'assunzione iniziale che $B$ fosse un CFL deve essere falsa. Abbiamo dunque dimostrato che $B$ non è \textit{context-free}.
+	\linea
+	\example Utilizzare il pumping lemma per dimostrare che il linguaggio $C = \{ a^ib^jc^k \taleche 0 \leq i \leq j \leq k \}$ è non context-free. \\
+	
+	\noindent
+	Assumo per assurdo che $C$ sia \textit{context-free} per ottenere una contraddizione. Sia $p$ il pumping-length, la cui esistenza è garantita dal pumping lemma per i CFL. Utilizziamo la stringa $s = a^pb^pc^p$ che abbiamo utilizzato anche nell'esercizio sopra, ma questa volta dobbiamo sia fare "pump down" che "pump up". \\
+	Sia $s = uvxyz$, consideriamo nuovamente i due casi dell'esercizio sopra.
+	\begin{enumerate}
+		\item Quando entrambi $v$ e $y$ contengono solo un tipo di simbolo, esiste almeno un simbolo che non occorre ne in $v$ ne in $y$. La condizione di prima non è più sufficiente a garantire che $s \notin C$, dobbiamo quindi suddividere ulteriormente in sottocasi:
+		\begin{enumerate}
+			\item La $a$ non appare. Proviamo a fare un "pump down" per ottenere la stringa $uv^0xy^0z = uxz$. Contiene lo stesso numero di $a$ della stringa $s$, ma contiene meno $b$ o meno $c$, quindi non è un membro di $C$.
+			\item  La $b$ non appare. Allora sia $a$ che $c$ devono apparire in $v$ o $y$ perché entrambi non possono essere stringa vuota. Se $a$ appare la stringa $uv^2xy^2z$ contiene più $a$ che $b$ e quindi non è in $C$. Se $c$ appare, la stringa $uv^0xy^0z = uvz$ contiene più $b$ che $c$ e non è in $C$.
+			\item La $c$ non appare. Allora la stringa $uv^2xy^2z$ contiene più $a$ o più $b$ che $c$, e non è in $C$.
+		\end{enumerate}
+		\item Quando sia $v$ che $y$ contengono più di un tipo di simbolo  $uv^2xy^2z$ non contiene i simboli nel gusto ordine. Quindi non può essere un membro di $C$. 
+	\end{enumerate}
+	Abbiamo dimostrato che $s$ non può essere pompata in quanto vìola il pumping lemma, e che quindi $C$ non è \textit{context-free}.
 	\end{document}
