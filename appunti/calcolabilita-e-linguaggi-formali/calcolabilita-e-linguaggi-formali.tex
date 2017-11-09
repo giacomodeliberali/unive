@@ -1075,7 +1075,7 @@ Il DFA deve riconoscere quindi, ad esempio, la stringa $\underbracket{100}_{w}\o
 	Per soddisfare il punto 3 dobbiamo essere sicuri che $vxz$ abbia lunghezza al massimo $p$. Nel parse-tree di $s$ l'occorrenza più in alto di $R$ genera $vxz$. Abbiamo scelto $R$ in modo che entrambe le occorrenze fossero nelle $\len{V}+1$ variabili più in basso del cammino, e abbiamo scelto il più lungo cammino nel parse-tree, quindi il sottoalbero dove $R$ genera $vxz$ è al massimo alto $\len{V}+2$. Un albero di questa altezza può generare una stringa di lunghezza massima $b^{\len{V}+2} = p$. 
 	
 	\linea
-	\example Utilizzare il pumping lemma per dimostrare che il linguaggio $B = \{ a^nb^nc^n \taleche n > \geq 0 \}$ è non context-free. \\
+	\example Utilizzare il pumping lemma per dimostrare che il linguaggio $B = \{ a^nb^nc^n \taleche n \geq 0 \}$ è non context-free. \\
 	
 	\noindent
 	Assumo per assurdo che $B$ sia \textit{context-free} per ottenere una contraddizione. Sia $p$ il pumping-length, la cui esistenza è garantita dal pumping lemma per i CFL. Prendiamo la stringa $s = a^pb^pc^p$. Chiaramente $s \in B$ e $\len{s} > p$. Il pumping lemma ci dice che $s$ può essere pompata, ma dimoreremo che in realtà non è così. Il altre parole verificheremo che in qualunque modo dividiamo $s$ in $uvxyz$, una delle tre condizioni del lemma viene violata. \\
@@ -1101,4 +1101,77 @@ Il DFA deve riconoscere quindi, ad esempio, la stringa $\underbracket{100}_{w}\o
 		\item Quando sia $v$ che $y$ contengono più di un tipo di simbolo  $uv^2xy^2z$ non contiene i simboli nel gusto ordine. Quindi non può essere un membro di $C$. 
 	\end{enumerate}
 	Abbiamo dimostrato che $s$ non può essere pompata in quanto vìola il pumping lemma, e che quindi $C$ non è \textit{context-free}.
+	
+	\subsection{Chiusura rispetto alle operazioni}
+	\subsubsection{Rispetto a concatenazione}
+	Dobbiamo dimostrare la classe dei context-free languages è chiusa rispetto alla concatenazione. Siano $A,B$ due CFL, allora esistono due CFG $G_1, G_2$ tali che $L(G_1) = A$ e $L(G_2) = B$. Siano $G_1 = (V_1, \Sigma, R_1, S_1)$ e $G_2(V_2, \Sigma, R_2, S_2)$, assumiamo senza perdita di generalità che $V_1 \cap V_2 = \varnothing$. Costruisco una nuova grammatica $G = (V_1 \cup V_2 \cup \{S\}, \Sigma, R_1 \cup R_2 \cup \{ S\to S_1, S \to S_2 \}, S)$, dove $S$ è un nuovo simbolo tale che $S \notin V_1 \cup V_2$.
+	\subsubsection{Rispetto all'intersezione}
+	Dobbiamo dimostrare la classe dei context-free languages è chiusa rispetto all'intersezione. Siano
+	\begin{gather*}
+		x = \{ a^mb^mc^n \taleche m,n \geq 0 \} \\
+		y = \{ a^mb^nc^n \taleche m,n \geq 0 \} \\\\
+		X \begin{cases*}
+			S \to Ac \\
+			A \to aAb \taleche \varepsilon \\
+			C \to cC \taleche \varepsilon	
+		\end{cases*} \\
+		Y \begin{cases*}
+			S \to BD \\
+			B \to aB \taleche \varepsilon \\
+			D \to bDc \to \varepsilon
+		\end{cases*} \\\\
+		X \cap Y = \{ a^nb^nc^n \taleche n \geq 0 \}
+	\end{gather*}
+	Quindi $X$ e $Y$ sono CF, ma $X \cap Y$ non è CF perché non esiste una CFG che lo descrive.
+	
+	\subsubsection{Rispetto al complemento}
+	Assumo per assurdo che la classe dei CFL non sia chiusa rispetto al complemento. Siano $A,B$ due CFL. Sappiamo che $\overline{A}$ e $\overline{B}$ sono CFL. Ma allora $\overline{A} \cup \overline{B}$ è CF (abbiamo già dimostrato la chiusura rispetto all'unione). Ma allora $\overline{\overline{A} \cup \overline{B}}$ è CFL:
+	\[
+		\overline{\overline{A} \cup \overline{B}} \stackrel{\textit{De Morgan}}{=} \overline{\overline{A}} \cap \overline{\overline{B}} = A \cap B
+	\]
+	Ma prima ho dimostrato che l'intersezione non è CF, mentre qua ho dimostrato che è CF ed ho ottenuto un assurdo.
+	
+	
+	\subsubsection{Rispetto all'intersezione}
+	Sia $C$ una CFL e sia $R$ un RL, dimostrare che $C \cap R$ è CF. Poiché $C$ è CF esiste un PDA $P = (Q_1, \Sigma, \Gamma, \delta, q_0, F)$ che lo riconosce. Poiché $R$ è regolare esiste un DFA $D = (Q', \Sigma, \delta', q_0', F')$ che lo riconosce. Costruisco un nuovo PDA $P'$ tale che $L(P') = C \cap R$:
+	\[
+		P' = (Q \times Q', \Sigma, \Gamma, \hat{\delta}, (q_0,q_0'), \hat{F})
+	\]
+	dove
+	\[
+		\hat{\delta} = (\underbracket{(q,q')}_{\mathclap{\text{stato PDA}}},\overbracket{a}^{\mathllap{\text{input}}},\overbracket{s}^{\mathrlap{\text{cima stack}}}) = \{ ((\hat{q},\hat{q}'), \underbracket{t}_{\mathclap{\text{simbolo sullo tack}}}) \taleche (\hat{q},t) \in \overbracket{\delta(q,a,s)}^{\mathrlap{\text{insieme possibili stati PDA e simboli da mettere nello stack}}} \land \; \hat{q} = \delta'(q',a) \}
+	\]
+	Gli stati accettanti sono tali quando sia il PDA che il DFA sono in uno stato accettante, ovvero $\hat{F} = F \times F'$.
+	\subsection{Esercizi}
+	\example Definire la grammatica dei seguenti linguaggi su $\{0,1\}$.
+	\begin{itemize}
+		\item $\{ w \taleche w \text{ contiene almeno tre } 1 \}$. Le produzioni sono
+		\begin{gather*}
+			A \to 0A \taleche 1A \taleche \varepsilon\\
+			S \to A1A1A1A			
+		\end{gather*}
+		\item $\{ w \taleche w \text{ inizia e finisce con lo stesso simbolo} \}$. Le produzioni sono
+		\begin{gather*}
+		A \to 0A \taleche 1A \taleche \varepsilon\\
+		S \to 1A1 \taleche 0A0
+		\end{gather*}
+		In questo modo posso ottenere anche le sole stringhe palindrome con $S \to 0S0 \taleche 1S1 \taleche 0 \taleche 1 \taleche \varepsilon$.
+		\item $\{ w \taleche w \text{ ha lunghezza dispari} \}$. In questo caso ho due possibilità:
+		\begin{enumerate}
+			\item genero tutte le stringhe pari e aggiungo un carattere:
+			\[
+				S \to 0S0 \taleche 0S1 \taleche 1S0 \taleche 1S1 \taleche 0 \taleche 1
+			\]
+			\item genero tutti i modi possibili
+			\begin{gather*}
+				A \to 00A \taleche 01A \taleche 10A \taleche 11A \taleche \varepsilon \\
+				S \to 0A \taleche 1A
+			\end{gather*}
+		\end{enumerate}
+	\end{itemize}
+	\example Dimostrare che $A = \{ 0^n#0^{2n}#0^{3n} \taleche n \geq 0 \}$ non è \textit{context-free}. Assumo per assurdo che $A$ sia CF, allora esiste $p$ tale che $p$ sia il pumping lemma length. Considero $S = 0^p#0^{2p}#0^{3p}$ e procedo per casi:
+	\begin{enumerate}
+		\item $v$ o $y$ contiene '$#$': $uv^2xy^2z \notin A$ perché avrò più di due sharp nella stringa
+		\item $v$ e $y$ sono formate solo da zero: osservo che $\len{vxy} \leq p$. Da ciò si deduce che non posso pompare in entrambi i pezzi assieme perché il pumping length è al massimo due due pezzi.
+	\end{enumerate}
 	\end{document}
