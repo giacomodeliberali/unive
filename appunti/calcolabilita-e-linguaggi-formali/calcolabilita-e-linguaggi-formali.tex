@@ -1169,9 +1169,12 @@ Il DFA deve riconoscere quindi, ad esempio, la stringa $\underbracket{100}_{w}\o
 			\end{gather*}
 		\end{enumerate}
 	\end{itemize}
-	\example Dimostrare che $A = \{ 0^n#0^{2n}#0^{3n} \taleche n \geq 0 \}$ non è \textit{context-free}. Assumo per assurdo che $A$ sia CF, allora esiste $p$ tale che $p$ sia il pumping lemma length. Considero $S = 0^p#0^{2p}#0^{3p}$ e procedo per casi:
+	\example Dimostrare che $A = \{ 0^n\#0^{2n}\#0^{3n} \taleche n \geq 0 \}$ non è \textit{context-free}. \\
+	
+	\noindent
+	Assumo per assurdo che $A$ sia CF, allora esiste $p$ tale che $p$ sia il pumping lemma length. Considero $S = 0^p\#0^{2p}\#0^{3p}$ e procedo per casi:
 	\begin{enumerate}
-		\item $v$ o $y$ contiene '$#$': $uv^2xy^2z \notin A$ perché avrò più di due sharp nella stringa
-		\item $v$ e $y$ sono formate solo da zero: osservo che $\len{vxy} \leq p$. Da ciò si deduce che non posso pompare in entrambi i pezzi assieme perché il pumping length è al massimo due due pezzi.
+		\item $v$ o $y$ contiene '$\#$': $uv^2xy^2z \notin A$ perché avrò più di due sharp nella stringa
+		\item $v$ e $y$ sono formate solo da zero: osservo che $\len{vxy} \leq p$. Da ciò si deduce che non posso pompare in entrambi i pezzi assieme perché il pumping length è al massimo su due pezzi.
 	\end{enumerate}
 	\end{document}
