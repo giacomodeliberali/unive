@@ -87,6 +87,9 @@
 \let\oldexists\exists
 \renewcommand{\exists}{\text{$\;\oldexists$}}
 
+\let\oldsharp\sharp
+\renewcommand{\sharp}{\text{$\#$}}
+
 \newcommand{\homeExercize}{\text{\faHome $\;$ Esercizio per casa}}
 \newcommand{\example}{\noindent\textbf{Esempio.\quad}}
 \newcommand{\derive}{\overset{*}{\Rightarrow}}
@@ -1177,4 +1180,111 @@ Il DFA deve riconoscere quindi, ad esempio, la stringa $\underbracket{100}_{w}\o
 		\item $v$ o $y$ contiene '$\#$': $uv^2xy^2z \notin A$ perché avrò più di due sharp nella stringa
 		\item $v$ e $y$ sono formate solo da zero: osservo che $\len{vxy} \leq p$. Da ciò si deduce che non posso pompare in entrambi i pezzi assieme perché il pumping length è al massimo su due pezzi.
 	\end{enumerate}
+
+	\pagebreak
+	\section{Macchine di Turing}
+	
+	Una macchina di Turing (o più brevemente MdT) è una macchina ideale che manipola i dati contenuti su un nastro di lunghezza potenzialmente infinita, secondo un insieme prefissato di regole ben definite. In altre parole, è un modello astratto che definisce una macchina in grado di eseguire algoritmi e dotata di un nastro potenzialmente infinito su cui può leggere e/o scrivere dei simboli. \\
+	
+	\noindent
+	La seguente lista riassume le differenze tra i DFA e le MdT:
+	\begin{itemize}
+		\item Una MdT può sia scrivere che leggere dal nastro
+		\item  Il nastro è infinito
+		\item Gli stati speciali per accettare o rifiutare hanno effetto immediato
+	\end{itemize}
+	\noindent
+	Considerando ad esempio una MdT $M$ per testare che l'input appartenga al linguaggio $B = \{w \sharp w \taleche w \in \{0,1\}^*\}$, che non è context-free, essa computerà nel seguente modo:
+	\[
+		0110 \sharp 0110
+	\]
+	Dopo aver letto il primo zero a sinistra, lo marco con una 'x', dopodiché vado nello zero a destra dello sharp e marco anche quest'ultimo con una 'x'. La situazione è quindi
+	\[
+		x110 \sharp x110
+	\]
+	Procedendo in questo modo quando ho marcato tutto l'input posso determinare che esso appartiene all'alfabeto, mentre nel caso non trovi una corrispondenza, rifiuto immediatamente. 
+	
+	\noindent
+	L'algoritmo utilizzato da $M$ è dunque riassunto come:
+	\begin{enumerate}
+		\item Fai zig-zag sul nastro tra posizioni corrispondenti a destra e a sinistra del simbolo '$\sharp$' per controllare se i simboli corrispondono. Se non lo fanno oppure non c'è il carattere '$\sharp$' rifiuta. Cancella i simboli man mano che sono stati controllati
+		\item  Quando tutti i simboli a sinistra di '$\sharp$' sono stati cancellati, controlli tutti i simboli a destra di '$\sharp$'. Se ne sono rimasti, rifiuta, altrimenti accetta
+	\end{enumerate}
+
+	\subsection{Definizione}
+	Una macchina di Turing è una 7-upla $(Q, \Sigma, \Gamma, \delta,q_0, q_{\textit{accept}},q_{\textit{reject}})$ dove
+	\begin{enumerate}
+		\item $Q$ è un insieme finito di stati
+		\item $\Sigma$ è un insieme finito di simboli di input non contenente il simbolo speciale '\textvisiblespace' (\textit{blank symbol})
+		\item $\Gamma$ è un insieme finito di simboli per il nastro, con '\textvisiblespace' $\in \Gamma$
+		\item $\delta: \; Q \times \Gamma \to Q \times \Gamma \times \{ L,R \}$ è la funzione di transizione
+		\item $q_0 \in Q$ è lo stato iniziale
+		\item $q_{\textit{accept}} \in Q$ è lo stato accettante
+		\item $q_{\textit{reject}} \in Q$ è lo stato rifiutante, dove $q_{\textit{reject}} \neq q_{\textit{accept}}$
+	\end{enumerate}
+	\pagebreak
+	\subsection{Configurazione}
+	Quando una MdT computa avvengono dei cambiamenti
+	\begin{itemize}
+		\item nello stato corrente
+		\item nel contenuto del nastro
+		\item nella posizione corrente della testina che legge il nastro
+	\end{itemize}
+	Un'impostazione di questi tre elementi è detta \textit{configurazione} della macchina di Turing. Essa si rappresenta in modo compatto con una terna $uqv$ dove $uv \in \Gamma^*$ e $q \in Q$, dove
+	\begin{itemize}
+		\item il nastro contiene $uv$
+		\item la testina è sul primo carattere di $v$
+		\item lo stato della MdT è $q$
+	\end{itemize}
+	Una configurazione $C_1$ produce una configurazione $C_2$ quando la macchina di Turing può legalmente andare da $C_1$ a $C_2$ in un solo passo. Supponendo di avere $abc \in \Gamma$, $uv \in \Gamma^*$ e gli stati $q_i$ e $q_j$. Diciamo che
+	\[
+		uaq_ibv \text{ produce } uq_jacv
+	\]
+	se la funzione di transizione $\delta(q_i,b) = (q_j,c,L)$. Questo nel caso la MdT si muova verso sinistra. Nel caso speculare di movimento verso destra invece abbiamo che
+	\[
+		uaq_ibv \text{ produce } uacq_jv
+	\]
+	se $\delta(q_i,b) = (q_j,c,R)$. Dei casi speciali occorrono quando la testina si trova alla fine della configurazione. Per il caso in cui sia più a sinistra, al configurazione
+	\[
+		q_ibv \text{ produce } q_jcv
+	\]
+	se la funzione di transizione si sta muovendo verso sinistra (perché vogliamo prevenire che la MdT esca dal margine sinistro del nastro), e
+	\[
+			q_ibv \text{ produce } cq_jv
+	\]
+	se la funzione si transizione si muove verso destra. Se la testina si trova nel margine destro della configurazione invece, la configurazione $uaq_i$ è equivalente a $uaq_i$\textvisiblespace \space perché assumiamo che blank symbols seguano la parte di nastro rappresentata nella configurazione.\\
+	\\
+	
+	\noindent
+	Una configurazione $uqv$ è accettante se e solo se $q = q_{\textit{accept}}$, mentre è rifiutante se e solo se $q = q_{\textit{reject}}$.\\
+	\\
+	Una macchina di Turing accetta l'input se e solo se esiste una sequenza di configurazioni $C_1,\dots,C_k$ tali che:
+	\begin{enumerate}
+		\item $C_1 = q_0w$, ovvero $C_1$ è la configurazione di partenza di $M$ sull'input $w$
+		\item $\forall i \in [1,k-1], c_i \Rightarrow c_{i+1}$
+		\item  $C_k$ è accettante
+	\end{enumerate}
+	Un linguaggio $A$ si dice Turing riconoscibile se e solo se esiste una MdT $M$ tale che $L(M) = A$. Quando una MdT non riconosce una stringa $w$ ho due casi:
+	\begin{enumerate}
+		\item ho raggiunto $q_{\textit{reject}}$
+		\item sono in loop
+	\end{enumerate}
+	Se una MdT termina su tutti gli input è chiamata \textit{decisione}. $A$ è decidibile se e solo se esiste una decisione $M$ tale che $L(M) = A$.\\
+	
+	\example Macchina di Turing che riconosce il linguaggio $A = \{0^{2^n} \taleche n \geq 0\}$. L'algoritmo di $M$ sull'input $w$ è:
+	\begin{enumerate}
+		\item Scorri da sinistra a destra del nastro, eliminando alternativamente gli zero
+		\item Se nel passo 1 il nastro contiene un solo zero, accetta
+		\item  Se nel passo 1 il nastro contiene più di uno zero e il numero di zeri è dispari, rifiuta
+		\item  Ritorna all'inizio sinistro del nastro
+		\item  Vai al passo 1
+	\end{enumerate} 
+	Ad ogni iterazione del passo 1 il numero di zeri viene dimezzato. Come la macchina attraversa il nastro da sinistra a destra nel passo 1, tiene traccia se il numero di zeri visti è pari o dispari. Se quel numero è dispari e maggiore di 1, il numero originale di zeri nell'input non poteva essere una potenza di 2. Infatti la macchina rifiuta in questo caso. In ogni caso, se il numero di zeri visti è 1, il numero originale doveva essere una potenza di 2. Quindi in questo caso accetta.
+	\begin{center}
+		\includegraphics[width=0.7\linewidth]{images/mdt1}
+	\end{center}
+	Esempio di computazione di $M$ sull'input $0000$:
+	\begin{center}
+		\includegraphics[width=0.5\linewidth]{images/mdt-run}
+	\end{center}
 	\end{document}
