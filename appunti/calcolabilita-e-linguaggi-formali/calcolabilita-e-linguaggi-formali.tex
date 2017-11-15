@@ -1287,4 +1287,29 @@ Il DFA deve riconoscere quindi, ad esempio, la stringa $\underbracket{100}_{w}\o
 	\begin{center}
 		\includegraphics[width=0.5\linewidth]{images/mdt-run}
 	\end{center}
+
+	\pagebreak
+	\subsection{Macchine di Turing multitape}
+	Una macchina di Turing multi-tape è equivalente ad una macchina di Turing standard, con la differenza che sono disponibili $k$ nastri. Ogni nastro ha la propria testina per leggere e scrivere. Inizialmente i'input compare solo sul nastro $1$, mentre gli altri sono bianchi. La funzione di transizione cambia permettendo di leggere e scrivere su tutti i nastri simultaneamente. Formalmente
+	\[
+		\delta: Q \times \Gamma^k \to Q \times \Gamma^k \times \{ L,R \}^k
+	\] 
+	\begin{theorem*}
+		Ogni macchina di Turing multitape può essere simulata con una macchina di Turing a nastro singolo.
+	\end{theorem*}
+	\begin{proof}
+		Sia $M$ una MdT multitape e sia $S$ una MdT singletape. Definiamo che $M$ abbia $k$ nastri. Allora simuliamo in $S$ i $k$ nastri di $M$, memorizzando tutte le informazioni nell'unico nastro disponibile. Utilizziamo un nuovo simbolo $\sharp$ per delimitare il contenuto di un nastro dall'altro. Oltre a mantenere il contenuto di tutti i nastri, dobbiamo anche tener traccia della posizione della testina in ogni nastro (nastro virtuale dal momento che ne esiste solo uno). Per fare ciò marcheremo con un punto $\bullet$ il simbolo nel nastro che corrisponde alla posizione della testina su quel nastro.
+		\begin{center}
+			\includegraphics[width=0.7\linewidth]{images/mdt-multitape}
+		\end{center}
+		Per rappresentare una MdT con $k=3$ nastri con una MdT a nastro singolo dobbiamo:\\\\
+		$S =$ input su $w_1,\dots,w_n$
+		\begin{itemize}
+			\item Porta il nastro di $S$ nella forma $\underbracket{\sharp\overset{\bullet}{w_1}w_2\dots w_n\sharp\overset{\bullet}{\text{\textvisiblespace}}\sharp\overset{\bullet}{\text{\textvisiblespace}}\sharp\dots\sharp}_{\text{$k$ pezzi}}$
+			\item Scorri il nastro dal primo $\sharp$ all'ultimo $\sharp$ per determinare il contenuto delle testine
+			\item Fai una seconda passata del nastro aggiornandolo
+			\item Se $S$ muove una testina a destra di $\sharp$ allora rimpiazza $\sharp$ con \textvisiblespace\space e fai uno shift a destra di tutto	
+		\end{itemize}
+	\end{proof}
+
 	\end{document}
