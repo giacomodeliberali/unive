@@ -1311,5 +1311,30 @@ Il DFA deve riconoscere quindi, ad esempio, la stringa $\underbracket{100}_{w}\o
 			\item Se $S$ muove una testina a destra di $\sharp$ allora rimpiazza $\sharp$ con \textvisiblespace\space e fai uno shift a destra di tutto	
 		\end{itemize}
 	\end{proof}
-
-	\end{document}
+	\pagebreak
+	\subsection{Macchine di Turing non deterministiche}
+	La computazione di una macchina di Turing non deterministica è un albero i cui rami corrispondono a diverse possibilità della macchina. Se un ramo della computazione porta ad uno stato accettante, la macchina accetta l'input. La funzione di transizione di una macchina di Turing non deterministica assume la forma:
+	\[
+		\delta: Q \times \Gamma \to \powerset{Q \times \Gamma \times \{ L,R \}}
+	\]
+	\begin{theorem*}
+		Ogni macchina di Turing non deterministica ha un equivalente macchina di Turing deterministica.
+	\end{theorem*}
+	\begin{proof}
+		Simuliamo una MdT non deterministica $N$ con una MdT deterministica $D$ con $3$ nastri. L'idea è che il primo nastro contenga l'input e non venga mai modificato, il secondo nastro mantenga una copia del nastro in un ramo del suo non determinismo e che il terzo nastro contenga la posizione delle testine di $D$ nell'albero di computazione di $N$.
+		\begin{center}
+			\includegraphics[width=0.7\linewidth]{images/mdt-nondet}
+		\end{center}
+		I passi da compiere sono:
+		\begin{enumerate}
+			\item Imposto il primo nastro secondo l'input
+			\item Svuoto il secondo nastro
+			\item Imposto il terzo nastro a $\varepsilon$
+			\item Copia il contenuto del primo nastro nel secondo
+			\item Usa il secondo nastro per simulare il comportamento della MdT non deterministica usando il contenuto del terzo nastro per risolvere il non determinismo. Se l'indirizzo non è valido o raggiungo un reject abortisce questo ramo e vai allo step successivo. Se raggiungo un accept, accetto l'input.
+			\item Rimpiazza il contenuto del terzo nastro con la prossima stringa 
+			\item vai a 4
+		\end{enumerate}
+		
+	\end{proof}
+\end{document}
