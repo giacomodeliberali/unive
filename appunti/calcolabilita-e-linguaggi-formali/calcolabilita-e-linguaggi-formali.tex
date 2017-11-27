@@ -1335,6 +1335,37 @@ Il DFA deve riconoscere quindi, ad esempio, la stringa $\underbracket{100}_{w}\o
 			\item Rimpiazza il contenuto del terzo nastro con la prossima stringa 
 			\item vai a 4
 		\end{enumerate}
-		
 	\end{proof}
+	
+	\pagebreak
+	
+	\subsection{Enumeratori}
+	Simbolicamente un enumeratore è una MdT con una stampante attaccata. Ogni volta che la macchina vuole aggiungere una stringa alla lista, la manda alla stampante. Inizialmente un enumeratore parte con un nastro in ingresso bianco. Se l'enumeratore non termina potrebbe stampare una serie infinita di stringhe. Un linguaggio enumerato da $E$ è la collezione di tutte le stringhe che l'enumeratore può stampare. Inoltre $E$ può stampare le stringhe del linguaggio in qualunque ordine, anche con ripetizione. Formalmente un enumeratore $E$ è una 7-upla $(Q,\Sigma,\Gamma,\delta,q_0,q_{print},q_{halt})$ dove
+	\begin{itemize}
+		\item $Q$ è un insieme finito di stati
+		\item $\Sigma$ è un insieme finito di simboli in ingresso
+		\item $\Gamma$ è un insieme finito di simboli del nastro
+		\item  $\delta: Q \times \Gamma \to Q \times \Gamma \times \{ L,R \} \times ( \Sigma \cup {\varepsilon} )$
+		\item $q_0$ è lo stato iniziale
+		\item $q_{print}$ è un insieme di stringhe di stampa
+		\item $q_{halt} \in Q$ è lo stato di arresto
+	\end{itemize}
+\begin{theorem*}
+	Un linguaggio è Turing riconoscibile se e solo se esiste un enumeratore che lo genera.
+\end{theorem*}
+\begin{proof}
+	Assumiamo di avere un enumeratore $E$, costruisco una MdT $M$ tale che $L(M) = L(E)$. La MdT $M$ funziona nella seguente maniera:\\\\
+	$M$ = "Su input $w$:
+	\begin{enumerate}
+		\item Lancia $E$. Ogni volta che $E$ stampa una stringa confrontala con $w$
+		\item Se $w$ compare nell'output di $E$, accetta"
+	\end{enumerate}
+	Chiaramente $M$ accetta quelle stringhe che compaiono nella lista di $E$. Ora vediamo l'altra direzione del se e solo se. Se una MdT $M$ riconosce un linguaggio $A$, allora costruiamo il seguente enumeratore $E$ per $A$. Diciamo che $s_1,s_2,s_3,\dots$ è la lista di tutte le possibili stringhe in $\Sigma^*$.\\\\
+	$E$ = "Ignora l'input
+	\begin{enumerate}
+		\item Ripeti i seguenti passi per $i = 1,2,3,\dots$
+		\item Lancia $M$ per gli $i$ passi per ogni input $s_1,s_2,\dots,s_i$
+		\item Se una delle computazioni accetta, stampa la corrispettiva $s_j$"
+	\end{enumerate}
+\end{proof}
 \end{document}
